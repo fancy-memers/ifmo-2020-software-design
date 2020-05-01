@@ -1,6 +1,7 @@
 plugins {
     java
     kotlin("jvm") version "1.4-M1"
+    application
 }
 
 group = "org.fancy.memers"
@@ -15,8 +16,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.hexworks.zircon:zircon.core-jvm:2020.0.2-PREVIEW")
-    implementation("org.hexworks.zircon:zircon.jvm.swing:2020.0.2-PREVIEW")
+    api("org.hexworks.zircon:zircon.core-jvm:2020.0.2-PREVIEW")
+    api("org.hexworks.zircon:zircon.jvm.swing:2020.0.2-PREVIEW")
     testImplementation("junit", "junit", "4.12")
 }
 
@@ -30,4 +31,8 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+}
+
+application {
+    mainClassName = "org.fancy.memers.MainKt"
 }
