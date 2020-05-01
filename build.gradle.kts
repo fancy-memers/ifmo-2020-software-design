@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.fancy.memers"
-version = "1.0"
+version = "0.1"
 
 repositories {
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
