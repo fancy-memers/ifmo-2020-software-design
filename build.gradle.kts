@@ -18,7 +18,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     api("org.hexworks.zircon:zircon.core-jvm:2020.0.2-PREVIEW")
     api("org.hexworks.zircon:zircon.jvm.swing:2020.0.2-PREVIEW")
-    testImplementation("junit", "junit", "4.12")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 
 configure<JavaPluginConvention> {
@@ -30,6 +30,9 @@ tasks {
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 
