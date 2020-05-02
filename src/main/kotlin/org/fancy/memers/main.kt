@@ -1,28 +1,22 @@
 package org.fancy.memers
 
+import org.fancy.memers.ui.start.StartMenuView
 import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.ColorThemes
-import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.application.AppConfig
-import org.hexworks.zircon.api.extensions.toScreen
 
 fun main() {
-    val tileGrid = SwingApplications.startTileGrid(
-        AppConfig.newBuilder()
-            .withSize(60, 30)
-            .withDefaultTileset(CP437TilesetResources.rexPaint16x16())
-            .build()
-    )
+    val config = AppConfig.newBuilder()
+        .withSize(70, 40)
+        .withDefaultTileset(CP437TilesetResources.rexPaint16x16())
+        .withTitle("RogueLike")
+        .build()
 
-    val screen = tileGrid.toScreen()
+    val theme = ColorThemes.arc()
+    val tileGrid = SwingApplications.startTileGrid(config)
 
-    screen.addComponent(
-        Components.label()
-            .withText("Hello!")
-            .withPosition(23, 10)
-    )
+    val startMenu = StartMenuView(tileGrid, theme)
 
-    screen.display()
-    screen.theme = ColorThemes.arc()
+    startMenu.dock()
 }
