@@ -2,7 +2,7 @@ package org.fancy.memers.ui.main.board
 
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
-import org.fancy.memers.model.generator.UniformBoardGenerator
+import org.fancy.memers.model.generator.CellularAutomataBoardGenerator
 import org.hexworks.zircon.api.data.*
 import org.hexworks.zircon.api.game.base.BaseGameArea
 
@@ -13,7 +13,7 @@ class GameArea(
     initialVisibleSize = visibleSize,
     initialActualSize = visibleSize
 ) {
-    private val generator = UniformBoardGenerator(visibleSize) // TODO: DI
+    private val generator = CellularAutomataBoardGenerator(visibleSize)
 
     init {
         val boardMap = generator.generateMap()
