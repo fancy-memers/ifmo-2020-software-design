@@ -1,0 +1,13 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: gradle:6.2.2-jdk11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build project
+        run: gradle test
