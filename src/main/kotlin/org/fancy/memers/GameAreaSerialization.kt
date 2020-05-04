@@ -84,5 +84,5 @@ private val context = serializersModuleOf(
 )
 private val json = Json(JsonConfiguration.Stable, context = context)
 
-fun serialize(gameArea: GameArea): String = json.stringify(GameAreaSerializer, gameArea)
-fun deserialize(data: String): GameArea = json.parse(GameAreaSerializer, data)
+fun GameArea.serialize(): String = json.stringify(GameAreaSerializer, this)
+fun GameArea.Companion.deserialize(data: String): GameArea = json.parse(GameAreaSerializer, data)
