@@ -1,8 +1,6 @@
 package org.fancy.memers.ui.main.board
 
-import org.fancy.memers.model.Block
-import org.fancy.memers.model.Drawable
-import org.fancy.memers.model.Empty
+import org.fancy.memers.model.*
 import org.fancy.memers.model.generator.BoardGenerator
 import org.fancy.memers.model.generator.UniformBoardGenerator
 import org.hexworks.zircon.api.data.Position3D
@@ -18,9 +16,22 @@ class GameArea(
     initialVisibleSize = visibleSize,
     initialActualSize = visibleSize
 ) {
-
     // actual model
     private val boardMap: MutableMap<Position3D, Block> = generator.generateMap().toMutableMap()
+    private var player = boardMap.values.find { it is Player } as Player
+
+    fun movePlayer(diff: Position3D) {
+        val targetPosition = player.position.withRelative(diff).withZ(0)
+        val targetBlock = boardMap[targetPosition] ?: return
+        if (targetBlock !is Empty && targetBlock !is Floor) {
+            return
+        }
+        setBlockAt(player.position, GameBlock(Tile.empty()))
+        boardMap.remove(player.position)
+        player = player.cloneWithPosition(targetPosition.withZ(player.position.z)) as Player
+        setBlockAt(player.position, GameBlock(createTile(player)))
+        boardMap[player.position] = player
+    }
 
     fun getBoardMap(): Map<Position3D, Block> = boardMap
 
@@ -28,7 +39,7 @@ class GameArea(
         for ((position, block) in boardMap) {
             val tile = createTile(block) // TODO: Factory
             val gameBlock = GameBlock(tile)
-            setBlockAt(Position3D.create(position.x, position.y, 0), gameBlock)
+            setBlockAt(Position3D.create(position.x, position.y, position.z), gameBlock)
         }
     }
 
