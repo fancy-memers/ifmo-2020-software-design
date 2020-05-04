@@ -9,5 +9,5 @@ jobs:
       image: gradle:6.2.2-jdk11
     steps:
       - uses: actions/checkout@v2
-      - name: Build project
+      - name: Build project and run tests
         run: gradle test
