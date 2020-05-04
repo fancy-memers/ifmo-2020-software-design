@@ -3,19 +3,15 @@ package org.fancy.memers.ui.main.board
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
 import org.fancy.memers.model.generator.UniformBoardGenerator
-import org.fancy.memers.ui.main.MainGameView
-import org.hexworks.zircon.api.builder.game.GameAreaBuilder
-import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.*
 import org.hexworks.zircon.api.game.base.BaseGameArea
-import org.hexworks.zircon.api.graphics.Symbols
 
 /// `in-memory representation of our world.`
 class GameArea(
-    visibleSize: Size
+    visibleSize: Size3D
 ) : BaseGameArea<Tile, Block<Tile>>(
-    initialVisibleSize = visibleSize.to3DSize(2),
-    initialActualSize = visibleSize.to3DSize(2)
+    initialVisibleSize = visibleSize,
+    initialActualSize = visibleSize
 ) {
     private val generator = UniformBoardGenerator(visibleSize) // TODO: DI
 
