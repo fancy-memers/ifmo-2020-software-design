@@ -2,6 +2,7 @@ package org.fancy.memers.ui.main.board
 
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
+import org.fancy.memers.model.Wall
 import org.fancy.memers.model.generator.UniformBoardGenerator
 import org.hexworks.zircon.api.data.*
 import org.hexworks.zircon.api.game.base.BaseGameArea
@@ -32,7 +33,7 @@ class GameArea(
                 else -> Tile.newBuilder()
                     .withCharacter(block.symbol)
                     .withForegroundColor(block.foregroundColor)
-                    .withBackgroundColor(block.foregroundColor)
+                    .withBackgroundColor(block.backgroundColor)
                     .buildCharacterTile()
             }
         }
