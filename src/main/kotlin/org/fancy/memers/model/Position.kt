@@ -1,7 +1,11 @@
 package org.fancy.memers.model
 
-data class Position(val x: Int, val y: Int)
+import org.hexworks.zircon.api.data.Position3D
 
-fun Position.contains(xRange: IntRange, yRange: IntRange): Boolean {
+fun Position3D.contains2D(xRange: IntRange, yRange: IntRange): Boolean {
     return xRange.contains(x) && yRange.contains(y)
+}
+
+fun Position3D.contains3D(xRange: IntRange, yRange: IntRange, zRange: IntRange): Boolean {
+    return xRange.contains(x) && yRange.contains(y) && zRange.contains(z)
 }
