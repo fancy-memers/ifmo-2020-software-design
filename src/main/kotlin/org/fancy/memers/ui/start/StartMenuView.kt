@@ -1,14 +1,20 @@
 package org.fancy.memers.ui.start
 
+import org.fancy.memers.deserialize
 import org.fancy.memers.ui.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
+import org.fancy.memers.ui.main.MainScreenConfig
+import org.fancy.memers.ui.main.board.GameArea
 import org.hexworks.zircon.api.Components
-import org.hexworks.zircon.api.component.*
+import org.hexworks.zircon.api.component.ColorTheme
+import org.hexworks.zircon.api.component.ComponentAlignment
 import org.hexworks.zircon.api.extensions.box
 import org.hexworks.zircon.api.extensions.shadow
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
-import org.hexworks.zircon.api.uievent.*
+import org.hexworks.zircon.api.uievent.ComponentEventType
+import org.hexworks.zircon.api.uievent.KeyCode
+import org.hexworks.zircon.api.uievent.KeyboardEventType
 import org.hexworks.zircon.api.view.base.BaseView
 import java.io.File
 
@@ -63,13 +69,19 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         startGenerated.requestFocus()
     }
 
-    private fun startWithFile(filePath: File) {
-//        TODO("")
+    private fun startWithFile(file: File) {
+        check(file.exists()) { "File $file does not exist" }
+        val data = file.readText()
+        val gameArea = GameArea.deserialize(data)
+        start(gameArea)
     }
 
     private fun startGeneratedWorld() {
+        start(GameArea(MainScreenConfig.boardSize(screen)))
+    }
 
-        replaceWith(MainGameView(tileGrid, theme))
+    private fun start(gameArea: GameArea) {
+        replaceWith(MainGameView(tileGrid, theme, gameArea))
         screen.close()
     }
 }

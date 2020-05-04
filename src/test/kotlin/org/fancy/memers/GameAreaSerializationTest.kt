@@ -11,7 +11,7 @@ internal class GameAreaSerializationTest {
         val size = Size3D.create(20, 10, 5)
         val before = GameArea(size)
 
-        val after = deserialize(serialize(before))
+        val after = GameArea.deserialize(before.serialize())
         check(before.visibleSize == after.visibleSize)
         check(before.getBoardMap() == after.getBoardMap())
     }
