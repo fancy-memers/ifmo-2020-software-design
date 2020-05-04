@@ -1,30 +1,36 @@
 package org.fancy.memers.ui.main.board
 
+import org.fancy.memers.model.Block
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
-import org.fancy.memers.model.Wall
+import org.fancy.memers.model.generator.BoardGenerator
 import org.fancy.memers.model.generator.UniformBoardGenerator
-import org.hexworks.zircon.api.data.*
+import org.hexworks.zircon.api.data.Position3D
+import org.hexworks.zircon.api.data.Size3D
+import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
 
 /// `in-memory representation of our world.`
 class GameArea(
-    visibleSize: Size3D
-) : BaseGameArea<Tile, Block<Tile>>(
+    visibleSize: Size3D,
+    generator: BoardGenerator = UniformBoardGenerator(visibleSize)
+) : BaseGameArea<Tile, org.hexworks.zircon.api.data.Block<Tile>>(
     initialVisibleSize = visibleSize,
     initialActualSize = visibleSize
 ) {
-    private val generator = UniformBoardGenerator(visibleSize) // TODO: DI
+
+    // actual model
+    private val boardMap: MutableMap<Position3D, Block> = generator.generateMap().toMutableMap()
+
+    fun getBoardMap(): Map<Position3D, Block> = boardMap
 
     init {
-        val boardMap = generator.generateMap()
         for ((position, block) in boardMap) {
             val tile = createTile(block) // TODO: Factory
             val gameBlock = GameBlock(tile)
             setBlockAt(Position3D.create(position.x, position.y, 0), gameBlock)
         }
     }
-
 
     companion object {
         fun createTile(block: Drawable): Tile {
