@@ -34,7 +34,7 @@ class CellularAutomataBoardGenerator(
         for (position in boardSize.fetchFloorPositions()) {
             var emptyCount = 0
             var wallsCount = 0
-            for (neighbor in position.fetchNeighbours().shuffled()) {
+            for (neighbor in position.fetchNeighbours()) {
                 val block = board[neighbor] ?: continue
                 if (block is Floor)
                     emptyCount++
