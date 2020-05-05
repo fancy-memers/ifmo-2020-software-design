@@ -64,7 +64,7 @@ private object GameAreaSerializer : KSerializer<GameArea> {
     override fun deserialize(decoder: Decoder): GameArea {
         val wrapper = GameAreaWrapper.serializer().deserialize(decoder)
         val generator = object : BoardGenerator {
-            override fun generateMap(): Map<Position3D, Block> {
+            override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
                 return wrapper.boardMap
             }
         }

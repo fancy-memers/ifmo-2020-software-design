@@ -1,6 +1,7 @@
 package org.fancy.memers.ui.main.board
 
 import org.fancy.memers.model.*
+import org.fancy.memers.model.generator.CellularAutomataBoardGenerator
 import org.fancy.memers.model.generator.BoardGenerator
 import org.fancy.memers.model.generator.UniformBoardGenerator
 import org.hexworks.zircon.api.data.Position3D
@@ -11,7 +12,7 @@ import org.hexworks.zircon.api.game.base.BaseGameArea
 /// `in-memory representation of our world.`
 class GameArea(
     visibleSize: Size3D,
-    generator: BoardGenerator = UniformBoardGenerator(visibleSize)
+    generator: BoardGenerator = CellularAutomataBoardGenerator(visibleSize, 8, UniformBoardGenerator(visibleSize, 0.5))
 ) : BaseGameArea<Tile, org.hexworks.zircon.api.data.Block<Tile>>(
     initialVisibleSize = visibleSize,
     initialActualSize = visibleSize

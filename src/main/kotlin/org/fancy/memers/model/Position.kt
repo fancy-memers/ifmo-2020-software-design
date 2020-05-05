@@ -9,3 +9,11 @@ fun Position3D.contains2D(xRange: IntRange, yRange: IntRange): Boolean {
 fun Position3D.contains3D(xRange: IntRange, yRange: IntRange, zRange: IntRange): Boolean {
     return xRange.contains(x) && yRange.contains(y) && zRange.contains(z)
 }
+
+fun Position3D.fetchNeighbours(): List<Position3D> {
+    return (-1..1).flatMap { x ->
+        (-1..1).map { y ->
+            withRelativeX(x).withRelativeY(y)
+        }
+    }
+}
