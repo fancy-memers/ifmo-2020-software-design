@@ -6,5 +6,5 @@ import kotlin.random.Random
 
 abstract class RandomBoardGenerator(seed: Int? = null) : BoardGenerator {
     protected val random: Random = seed?.let { Random(it) } ?: Random
-    abstract override fun generateMap(isWithPlayer: Boolean): Map<Position3D, Block>
+    abstract override fun generateMap(withPlayer: Boolean): Map<Position3D, Block>
 }

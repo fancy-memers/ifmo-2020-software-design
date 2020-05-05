@@ -17,12 +17,12 @@ class CellularAutomataBoardGenerator(
         return floorPositions.random(random).withZ(boardSize.zLength - 1)
     }
 
-    override fun generateMap(isWithPlayer: Boolean): Map<Position3D, Block> {
+    override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
         var gameBoard = initialGenerator.generateMap(false).toMutableMap()
         repeat(iterationNumber) {
             gameBoard = iterateMap(gameBoard)
         }
-        if (isWithPlayer) {
+        if (withPlayer) {
             val playerPosition = randomPlayerPosition(gameBoard)
             gameBoard[playerPosition] = Player(playerPosition)
         }
