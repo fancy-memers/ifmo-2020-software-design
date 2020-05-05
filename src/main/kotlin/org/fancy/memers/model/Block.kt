@@ -7,8 +7,8 @@ import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.graphics.Symbols
 
 @Serializable
-abstract class Block: Drawable {
-    abstract fun cloneWithPosition(position: @ContextualSerialization Position3D): Block
+sealed class Block: Drawable {
+    abstract fun cloneWithPosition(position: Position3D): Block
 }
 
 @Serializable
