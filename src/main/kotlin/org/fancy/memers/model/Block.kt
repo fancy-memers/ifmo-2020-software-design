@@ -21,7 +21,7 @@ data class Empty(override val position: @ContextualSerialization Position3D) : B
 
 @Serializable
 data class Floor(override val position: @ContextualSerialization Position3D) : Block() {
-    override fun cloneWithPosition(position: Position3D): Block =Floor(position)
+    override fun cloneWithPosition(position: Position3D): Block = Floor(position)
 
     override val symbol: Char
         get() = Symbols.INTERPUNCT
