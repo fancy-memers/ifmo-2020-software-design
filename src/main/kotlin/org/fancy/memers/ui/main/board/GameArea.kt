@@ -9,6 +9,8 @@ import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
 
+
+
 /// `in-memory representation of our world.`
 class GameArea(
     visibleSize: Size3D,
@@ -19,7 +21,8 @@ class GameArea(
 ) {
     // actual model
     private val boardMap: MutableMap<Position3D, Block> = generator.generateMap().toMutableMap()
-    private var player = boardMap.values.find { it is Player } as Player
+    private val player = boardMap.values.find { it is Player } as Player
+    private val playerGameBlock = GameBlock(createTile(player))
 
     fun movePlayer(diff: Position3D) {
         val targetPosition = player.position.withRelative(diff).withZ(0)
@@ -28,19 +31,19 @@ class GameArea(
             return
         }
         setBlockAt(player.position, GameBlock(Tile.empty()))
-        boardMap.remove(player.position)
-        player = player.cloneWithPosition(targetPosition.withZ(player.position.z)) as Player
-        setBlockAt(player.position, GameBlock(createTile(player)))
-        boardMap[player.position] = player
+        player.position = targetPosition.withZ(player.position.z)
+        setBlockAt(player.position, playerGameBlock)
     }
 
     fun getBoardMap(): Map<Position3D, Block> = boardMap
 
     init {
+        boardMap.remove(player.position)
+        setBlockAt(player.position, playerGameBlock)
         for ((position, block) in boardMap) {
             val tile = createTile(block) // TODO: Factory
             val gameBlock = GameBlock(tile)
-            setBlockAt(Position3D.create(position.x, position.y, position.z), gameBlock)
+            setBlockAt(position, gameBlock)
         }
     }
 

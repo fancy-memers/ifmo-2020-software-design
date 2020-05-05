@@ -12,5 +12,5 @@ interface Drawable {
     val backgroundColor: TileColor
         get() = TileColor.defaultBackgroundColor()
 
-    val position: Position3D
+    var position: Position3D
 }

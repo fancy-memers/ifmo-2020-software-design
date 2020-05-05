@@ -12,7 +12,7 @@ sealed class Block: Drawable {
 }
 
 @Serializable
-data class Empty(override val position: @ContextualSerialization Position3D) : Block() {
+data class Empty(override var position: @ContextualSerialization Position3D) : Block() {
     override fun cloneWithPosition(position: Position3D): Block = Empty(position)
 
     override val symbol: Char
@@ -20,7 +20,7 @@ data class Empty(override val position: @ContextualSerialization Position3D) : B
 }
 
 @Serializable
-data class Floor(override val position: @ContextualSerialization Position3D) : Block() {
+data class Floor(override var position: @ContextualSerialization Position3D) : Block() {
     override fun cloneWithPosition(position: Position3D): Block = Floor(position)
 
     override val symbol: Char
@@ -32,7 +32,7 @@ data class Floor(override val position: @ContextualSerialization Position3D) : B
 }
 
 @Serializable
-data class Wall(override val position: @ContextualSerialization Position3D) : Block() {
+data class Wall(override var position: @ContextualSerialization Position3D) : Block() {
     override fun cloneWithPosition(position: Position3D): Block = Wall(position)
 
     override val symbol: Char
@@ -44,7 +44,7 @@ data class Wall(override val position: @ContextualSerialization Position3D) : Bl
 }
 
 @Serializable
-data class Player(override val position: @ContextualSerialization Position3D) : Block() {
+data class Player(override var position: @ContextualSerialization Position3D) : Block() {
     override fun cloneWithPosition(position: Position3D): Block = Player(position)
 
     override val symbol: Char
