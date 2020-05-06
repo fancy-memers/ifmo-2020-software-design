@@ -73,8 +73,8 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
     private fun startWithFile(file: File) {
         check(file.exists()) { "File $file does not exist" }
         val data = file.readText()
-        val gameArea = GameArea.deserialize(data)
-        start(gameArea)
+        val world = World.deserialize(data)
+        start(GameArea(world))
     }
 
     private fun startGeneratedWorld() {

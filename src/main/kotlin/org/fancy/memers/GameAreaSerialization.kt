@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.serializersModuleOf
 import org.fancy.memers.model.*
 import org.fancy.memers.model.generator.BoardGenerator
-import org.fancy.memers.ui.main.board.GameArea
+import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
@@ -46,30 +46,29 @@ private object Size3DSerializer : KSerializer<Size3D> {
     }
 }
 
-@Serializer(forClass = GameArea::class)
-private object GameAreaSerializer : KSerializer<GameArea> {
+@Serializer(forClass = World::class)
+private object WorldSerializer : KSerializer<World> {
     @Serializable
-    private data class GameAreaWrapper(
+    private data class WorldWrapper(
         val size: @ContextualSerialization Size3D,
-        val boardMap: Map<@ContextualSerialization Position3D, Block>
+        val board: Map<@ContextualSerialization Position3D, Block>
     )
 
-    override val descriptor: SerialDescriptor = GameAreaWrapper.serializer().descriptor
+    override val descriptor: SerialDescriptor = WorldWrapper.serializer().descriptor
 
-    override fun serialize(encoder: Encoder, value: GameArea) {
-//        val wrapper = with(value) { GameAreaWrapper(actualSize, getBoardMap()) }
-//        GameAreaWrapper.serializer().serialize(encoder, wrapper)
+    override fun serialize(encoder: Encoder, value: World) {
+        val wrapper = with(value) { WorldWrapper(size, actualBoard) }
+        WorldWrapper.serializer().serialize(encoder, wrapper)
     }
 
-    override fun deserialize(decoder: Decoder): GameArea {
-        return null as GameArea
-//        val wrapper = GameAreaWrapper.serializer().deserialize(decoder)
-//        val generator = object : BoardGenerator {
-//            override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
-//                return wrapper.boardMap
-//            }
-//        }
-//        return GameArea(wrapper.size, generator)
+    override fun deserialize(decoder: Decoder): World {
+        val wrapper = WorldWrapper.serializer().deserialize(decoder)
+        val generator = object : BoardGenerator {
+            override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
+                return wrapper.board
+            }
+        }
+        return World(wrapper.size, generator)
     }
 }
 
@@ -85,5 +84,5 @@ private val context = serializersModuleOf(
 )
 private val json = Json(JsonConfiguration.Stable, context = context)
 
-fun GameArea.serialize(): String = json.stringify(GameAreaSerializer, this)
-fun GameArea.Companion.deserialize(data: String): GameArea = json.parse(GameAreaSerializer, data)
+fun World.serialize(): String = json.stringify(WorldSerializer, this)
+fun World.Companion.deserialize(data: String): World = json.parse(WorldSerializer, data)

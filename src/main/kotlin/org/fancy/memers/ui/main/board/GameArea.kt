@@ -16,12 +16,8 @@ class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.default
     val actualBoard = generator.generateMap().toMutableMap()
 
     // This should be fixed at generator level
-    val player = actualBoard.values.find { it is Player } as Player
+    val player = actualBoard.values.single { it is Player }
     private val blockChangeEventHandlers = mutableListOf<(Position3D) -> Unit>()
-
-    init {
-//        actualBoard.remove(player.position)
-    }
 
     fun addBlockChangeEventHandler(handler: (Position3D) -> Unit) {
         blockChangeEventHandlers.add(handler)
@@ -48,6 +44,8 @@ class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.default
         triggerBlockChangeEvent(positionOld)
         triggerBlockChangeEvent(positionNew)
     }
+
+    companion object {}
 }
 
 class GameArea(val world: World):
