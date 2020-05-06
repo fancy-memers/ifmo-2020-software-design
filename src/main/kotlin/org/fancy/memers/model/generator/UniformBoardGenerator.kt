@@ -14,7 +14,7 @@ class UniformBoardGenerator(
         check(boardSize.xLength > 2 && boardSize.yLength > 2 && boardSize.zLength > 0)
     }
 
-    override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
+    override fun generateMap(withPlayer: Boolean, numberEnemies: Int): Map<Position3D, Block> {
         val pairs = boardSize.fetchFloorPositions()
             .map { it to randomBlock(it) }
             .toList()

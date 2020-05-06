@@ -5,7 +5,7 @@ import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
 interface BoardGenerator {
-    fun generateMap(withPlayer: Boolean = true): Map<Position3D, Block>
+    fun generateMap(withPlayer: Boolean = true, numberEnemies: Int = 10): Map<Position3D, Block>
 
     companion object {
         fun defaultGenerator(size: Size3D): BoardGenerator =

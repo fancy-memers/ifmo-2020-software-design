@@ -36,7 +36,7 @@ private data class WorldWrapper(
 )
 
 fun World.serialize(): String {
-    val wrapper = WorldWrapper(size, actualBoard.keys.toList(), actualBoard.values.toList())
+    val wrapper = WorldWrapper(size, board.keys.toList(), board.values.toList())
     return ADAPTER.toJson(wrapper)
 }
 

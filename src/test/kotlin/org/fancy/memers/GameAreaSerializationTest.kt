@@ -15,11 +15,11 @@ internal class GameAreaSerializationTest {
         val worldAfter = World.deserialize(worldBefore.serialize())
         check(worldBefore.size == worldAfter.size)
         // for debug
-        for (position in worldBefore.actualBoard.keys) {
-            val blockBefore = worldBefore.actualBoard[position]
-            val blockAfter = worldAfter.actualBoard[position]
+        for (position in worldBefore.board.keys) {
+            val blockBefore = worldBefore.board[position]
+            val blockAfter = worldAfter.board[position]
             check(blockBefore == blockAfter)
         }
-        check(worldBefore.actualBoard == worldAfter.actualBoard)
+        check(worldBefore.board == worldAfter.board)
     }
 }
