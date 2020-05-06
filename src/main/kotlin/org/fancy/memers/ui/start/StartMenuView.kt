@@ -5,6 +5,7 @@ import org.fancy.memers.ui.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
 import org.fancy.memers.ui.main.MainScreenConfig
 import org.fancy.memers.ui.main.board.GameArea
+import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.ColorTheme
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -72,12 +73,12 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
     private fun startWithFile(file: File) {
         check(file.exists()) { "File $file does not exist" }
         val data = file.readText()
-        val gameArea = GameArea.deserialize(data)
-        start(gameArea)
+        val world = World.deserialize(data)
+        start(GameArea(world))
     }
 
     private fun startGeneratedWorld() {
-        start(GameArea(MainScreenConfig.boardSize(screen)))
+        start(GameArea(World(MainScreenConfig.boardSize(screen))))
     }
 
     private fun start(gameArea: GameArea) {

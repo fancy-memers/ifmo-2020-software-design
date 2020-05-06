@@ -1,40 +1,73 @@
 package org.fancy.memers.ui.main.board
 
-import org.fancy.memers.model.Block
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
-import org.fancy.memers.model.generator.CellularAutomataBoardGenerator
+import org.fancy.memers.model.Floor
+import org.fancy.memers.model.Player
 import org.fancy.memers.model.generator.BoardGenerator
-import org.fancy.memers.model.generator.UniformBoardGenerator
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
+import org.hexworks.zircon.api.data.Block as GameAreaBlock
 
-/// `in-memory representation of our world.`
-class GameArea(
-    visibleSize: Size3D,
-    generator: BoardGenerator = CellularAutomataBoardGenerator(visibleSize, 8, UniformBoardGenerator(visibleSize, 0.5))
-) : BaseGameArea<Tile, org.hexworks.zircon.api.data.Block<Tile>>(
-    initialVisibleSize = visibleSize,
-    initialActualSize = visibleSize
-) {
 
-    // actual model
-    private val boardMap: MutableMap<Position3D, Block> = generator.generateMap().toMutableMap()
+class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.defaultGenerator(size)) {
+    val actualBoard = generator.generateMap().toMutableMap()
 
-    fun getBoardMap(): Map<Position3D, Block> = boardMap
+    // This should be fixed at generator level
+    val player = actualBoard.values.single { it is Player }
+    private val blockChangeEventHandlers = mutableListOf<(Position3D) -> Unit>()
+
+    fun addBlockChangeEventHandler(handler: (Position3D) -> Unit) {
+        blockChangeEventHandlers.add(handler)
+    }
+
+    private fun triggerBlockChangeEvent(position: Position3D) {
+        blockChangeEventHandlers.forEach { it(position) }
+    }
+
+    fun movePlayer(diff: Position3D) {
+        val oldPlayerPosition = player.position
+        val newPlayerPosition = oldPlayerPosition.withRelative(diff)
+
+        val targetBlockPosition = newPlayerPosition.withZ(0)
+        val targetBlock = actualBoard[targetBlockPosition] ?: return
+        if (targetBlock !is Empty && targetBlock !is Floor) {
+            return
+        }
+
+        actualBoard.remove(oldPlayerPosition)
+        actualBoard[newPlayerPosition] = player
+        player.position = newPlayerPosition
+
+        triggerBlockChangeEvent(oldPlayerPosition)
+        triggerBlockChangeEvent(newPlayerPosition)
+    }
+
+    companion object {}
+}
+
+class GameArea(val world: World):
+    BaseGameArea<Tile, GameAreaBlock<Tile>>(initialVisibleSize = world.size, initialActualSize = world.size) {
 
     init {
-        for ((position, block) in boardMap) {
-            val tile = createTile(block) // TODO: Factory
-            val gameBlock = GameBlock(tile)
-            setBlockAt(Position3D.create(position.x, position.y, 0), gameBlock)
+        world.addBlockChangeEventHandler { updateBlock(it) }
+        for (position in world.actualBoard.keys) {
+            updateBlock(position)
         }
     }
 
+    private fun updateBlock(position: Position3D) {
+        val block = world.actualBoard[position]
+        val gameBlock = if (block != null) GameBlock(createTile(block)) else EMPTY_TILE_BLOCK
+        setBlockAt(position, gameBlock)
+    }
+
     companion object {
-        fun createTile(block: Drawable): Tile {
+        private val EMPTY_TILE_BLOCK = GameBlock(Tile.empty())
+
+        private fun createTile(block: Drawable): Tile {
             return when (block) {
                 is Empty -> Tile.empty()
                 else -> Tile.newBuilder()
