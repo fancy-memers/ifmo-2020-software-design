@@ -57,18 +57,19 @@ private object GameAreaSerializer : KSerializer<GameArea> {
     override val descriptor: SerialDescriptor = GameAreaWrapper.serializer().descriptor
 
     override fun serialize(encoder: Encoder, value: GameArea) {
-        val wrapper = with(value) { GameAreaWrapper(actualSize, getBoardMap()) }
-        GameAreaWrapper.serializer().serialize(encoder, wrapper)
+//        val wrapper = with(value) { GameAreaWrapper(actualSize, getBoardMap()) }
+//        GameAreaWrapper.serializer().serialize(encoder, wrapper)
     }
 
     override fun deserialize(decoder: Decoder): GameArea {
-        val wrapper = GameAreaWrapper.serializer().deserialize(decoder)
-        val generator = object : BoardGenerator {
-            override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
-                return wrapper.boardMap
-            }
-        }
-        return GameArea(wrapper.size, generator)
+        return null as GameArea
+//        val wrapper = GameAreaWrapper.serializer().deserialize(decoder)
+//        val generator = object : BoardGenerator {
+//            override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
+//                return wrapper.boardMap
+//            }
+//        }
+//        return GameArea(wrapper.size, generator)
     }
 }
 

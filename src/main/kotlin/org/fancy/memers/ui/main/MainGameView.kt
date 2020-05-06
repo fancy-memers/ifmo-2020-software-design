@@ -20,22 +20,22 @@ class MainGameView(
 
     init {
         screen.handleKeyboardEvents(KeyboardEventType.KEY_RELEASED) {
-                event: KeyboardEvent, phase: UIEventPhase ->
+                event: KeyboardEvent, _: UIEventPhase ->
             when (event.code) {
                 in KeyboardControls.MOVE_UP -> {
-                    gameArea.movePlayer(Position3D.create(0, -1, 0))
+                    gameArea.world.movePlayer(Position3D.create(0, -1, 0))
                     Processed
                 }
                 in KeyboardControls.MOVE_DOWN -> {
-                    gameArea.movePlayer(Position3D.create(0, 1, 0))
+                    gameArea.world.movePlayer(Position3D.create(0, 1, 0))
                     Processed
                 }
                 in KeyboardControls.MOVE_LEFT -> {
-                    gameArea.movePlayer(Position3D.create(-1, 0, 0))
+                    gameArea.world.movePlayer(Position3D.create(-1, 0, 0))
                     Processed
                 }
                 in KeyboardControls.MOVE_RIGHT -> {
-                    gameArea.movePlayer(Position3D.create(1, 0, 0))
+                    gameArea.world.movePlayer(Position3D.create(1, 0, 0))
                     Processed
                 }
                 else -> Pass

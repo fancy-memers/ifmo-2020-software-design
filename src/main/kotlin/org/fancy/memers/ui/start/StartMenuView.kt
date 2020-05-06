@@ -5,6 +5,7 @@ import org.fancy.memers.ui.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
 import org.fancy.memers.ui.main.MainScreenConfig
 import org.fancy.memers.ui.main.board.GameArea
+import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.ColorTheme
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -77,7 +78,7 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
     }
 
     private fun startGeneratedWorld() {
-        start(GameArea(MainScreenConfig.boardSize(screen)))
+        start(GameArea(World(MainScreenConfig.boardSize(screen))))
     }
 
     private fun start(gameArea: GameArea) {
