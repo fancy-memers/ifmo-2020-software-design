@@ -28,21 +28,21 @@ class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.default
     }
 
     fun movePlayer(diff: Position3D) {
-        val positionOld = player.position
-        val positionNew = positionOld.withRelative(diff)
+        val oldPlayerPosition = player.position
+        val newPlayerPosition = oldPlayerPosition.withRelative(diff)
 
-        val targetPosition = positionNew.withZ(0)
-        val targetBlock = actualBoard[targetPosition] ?: return
+        val targetBlockPosition = newPlayerPosition.withZ(0)
+        val targetBlock = actualBoard[targetBlockPosition] ?: return
         if (targetBlock !is Empty && targetBlock !is Floor) {
             return
         }
 
-        actualBoard.remove(positionOld)
-        actualBoard[positionNew] = player
-        player.position = positionNew
+        actualBoard.remove(oldPlayerPosition)
+        actualBoard[newPlayerPosition] = player
+        player.position = newPlayerPosition
 
-        triggerBlockChangeEvent(positionOld)
-        triggerBlockChangeEvent(positionNew)
+        triggerBlockChangeEvent(oldPlayerPosition)
+        triggerBlockChangeEvent(newPlayerPosition)
     }
 
     companion object {}
