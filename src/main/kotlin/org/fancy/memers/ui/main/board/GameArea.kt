@@ -12,13 +12,13 @@ class GameArea(val world: World):
 
     init {
         world.addBlockChangeEventHandler { updateBlock(it) }
-        for (position in world.actualBoard.keys) {
+        for (position in world.board.keys) {
             updateBlock(position)
         }
     }
 
     private fun updateBlock(position: Position3D) {
-        val block = world.actualBoard[position]
+        val block = world.board[position]
         val gameBlock = if (block != null) GameBlock(createTile(block)) else EMPTY_TILE_BLOCK
         setBlockAt(position, gameBlock)
     }
