@@ -18,9 +18,11 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
     api("org.hexworks.zircon:zircon.core-jvm:2020.0.2-PREVIEW")
     api("org.hexworks.zircon:zircon.jvm.swing:2020.0.2-PREVIEW")
+    api("com.squareup.moshi:moshi:1.9.2")
+    api("com.squareup.moshi:moshi-kotlin:1.9.2")
+    api("com.squareup.moshi:moshi-adapters:1.9.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 

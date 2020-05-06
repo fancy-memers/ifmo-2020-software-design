@@ -41,7 +41,7 @@ class CellularAutomataBoardGenerator(
                 else
                     wallsCount++
             }
-            board[position] = if (emptyCount >= wallsCount) Floor(position) else Wall(position)
+            board[position] = if (emptyCount >= wallsCount) Floor() else Wall()
         }
         return board
     }

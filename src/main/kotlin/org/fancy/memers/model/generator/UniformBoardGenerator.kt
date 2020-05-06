@@ -41,9 +41,9 @@ class UniformBoardGenerator(
                 0 until boardSize.yLength
             )
         return if (isSafePositions && random.nextDouble() >= fillRate) {
-            Floor(position)
+            Floor()
         } else {
-            Wall(position)
+            Wall()
         }
     }
 }
