@@ -1,17 +1,19 @@
 package org.fancy.memers.ui.main.board
 
+import org.fancy.memers.model.Block
 import org.fancy.memers.model.Empty
 import org.fancy.memers.model.Floor
 import org.fancy.memers.model.Player
-import org.fancy.memers.model.generator.BoardGenerator
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
-class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.defaultGenerator(size)) {
-    val actualBoard = generator.generateMap().toMutableMap()
+class World(
+    val size: Size3D,
+    val actualBoard: MutableMap<Position3D, Block>
+) {
 
     // This should be fixed at generator level
-    val player = actualBoard.values.single { it is Player }
+    val player: Player = actualBoard.values.filterIsInstance<Player>().single()
     private val blockChangeEventHandlers = mutableListOf<(Position3D) -> Unit>()
 
     fun addBlockChangeEventHandler(handler: (Position3D) -> Unit) {

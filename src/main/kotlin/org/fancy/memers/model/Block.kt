@@ -1,22 +1,21 @@
 package org.fancy.memers.model
 
-import kotlinx.serialization.ContextualSerialization
-import kotlinx.serialization.Serializable
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.graphics.Symbols
+import java.util.*
 
-@Serializable
-sealed class Block : Drawable
+sealed class Block : Drawable {
+    override fun equals(other: Any?): Boolean = this === other || javaClass == other?.javaClass
+    override fun hashCode(): Int = javaClass.hashCode()
+}
 
-@Serializable
-data class Empty(override var position: @ContextualSerialization Position3D) : Block() {
+class Empty : Block() {
     override val symbol: Char
         get() = ' '
 }
 
-@Serializable
-data class Floor(override var position: @ContextualSerialization Position3D) : Block() {
+class Floor : Block() {
     override val symbol: Char
         get() = Symbols.INTERPUNCT
     override val foregroundColor: TileColor
@@ -25,8 +24,7 @@ data class Floor(override var position: @ContextualSerialization Position3D) : B
         get() = TileColor.fromString("#1e2320", 100)
 }
 
-@Serializable
-data class Wall(override var position: @ContextualSerialization Position3D) : Block() {
+class Wall : Block() {
     override val symbol: Char
         get() = '#'
     override val foregroundColor: TileColor
@@ -35,12 +33,18 @@ data class Wall(override var position: @ContextualSerialization Position3D) : Bl
         get() = TileColor.fromString("#3E3D32")
 }
 
-@Serializable
-data class Player(override var position: @ContextualSerialization Position3D) : Block() {
+abstract class Entity(var position: Position3D) : Block() {
     override val symbol: Char
         get() = '@'
     override val foregroundColor: TileColor
         get() = TileColor.fromString("#FFCD22")
     override val backgroundColor: TileColor
         get() = TileColor.fromString("#1e2320")
+
+    override fun equals(other: Any?): Boolean = super.equals(other) && position == (other as Entity).position
+    override fun hashCode(): Int = Objects.hashCode(position)
 }
+
+class Player(position: Position3D) : Entity(position)
+
+class Enemy(position: Position3D) : Entity(position)
