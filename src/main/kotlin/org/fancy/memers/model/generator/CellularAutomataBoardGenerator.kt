@@ -1,6 +1,7 @@
 package org.fancy.memers.model.generator
 
 import org.fancy.memers.model.*
+import org.fancy.memers.model.ai.*
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
@@ -28,7 +29,7 @@ class CellularAutomataBoardGenerator(
         }
         repeat(numberEnemies) {
             val enemyPosition = randomEmptyPosition(gameBoard)
-            gameBoard[enemyPosition] = Enemy(enemyPosition)
+            gameBoard[enemyPosition] = Enemy(FunkyEnemyBehaviour(), enemyPosition)
         }
         return gameBoard
     }

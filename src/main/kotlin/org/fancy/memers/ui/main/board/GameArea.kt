@@ -1,30 +1,84 @@
 package org.fancy.memers.ui.main.board
 
+import kotlinx.collections.immutable.toImmutableList
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
-import org.hexworks.zircon.api.data.Position3D
+import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.base.BaseGameArea
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
 
-class GameArea(val world: World):
-    BaseGameArea<Tile, GameAreaBlock<Tile>>(initialVisibleSize = world.size, initialActualSize = world.size) {
+class GameArea(val world: World) :
+    RogueBaseGameArea<Tile, GameAreaBlock<Tile>>(initialVisibleSize = world.size, initialActualSize = world.size) {
+    /*
+        Запоминаем модификации мира на текущем шаге
+        Needed for:
+        При попытке занять одну клетку существа атакуют друг друга
+     */
+    val currentStepModifications = StepModifications()
 
     init {
-        world.addBlockChangeEventHandler { updateBlock(it) }
-        for (position in world.board.keys) {
-            updateBlock(position)
+        reloadGameArea()
+    }
+
+    // внешняя функция для отклика на модификацию
+    fun apply(modification: GameModification) {
+        currentStepModifications.add(modification)
+        if (modification is GameModification.Step) {
+            makeStep()
         }
     }
 
-    private fun updateBlock(position: Position3D) {
-        val block = world.board[position]
-        val gameBlock = if (block != null) GameBlock(createTile(block)) else EMPTY_TILE_BLOCK
-        setBlockAt(position, gameBlock)
+    // функция, которая делает нужный стафф в конце степа
+    private fun makeStep() {
+        makeAIModification()
+
+        applyCurrentStep(currentStepModifications)
+        reloadGameArea()
+        currentStepModifications.clear()
+
+        if (world.player.isDead) {
+            gameOver()
+        }
+        println(world.player)
+        println(world.enemies)
+        println()
+    }
+
+    // function to make enemies move/attack etc.
+    private fun makeAIModification() {
+        val enemies = world.enemies.toImmutableList()
+        for (enemy in enemies) {
+            val behaviour = enemy.behaviour
+            val modification = behaviour.gameAreaModification(enemy, this) ?: continue
+            apply(modification)
+        }
+    }
+
+    // применяет все модификации игрового мира
+    private fun applyCurrentStep(modifications: StepModifications) {
+        for (modification in modifications.modifications) {
+            when (modification) {
+                is GameModification.Move -> world.move(modification.entity, modification.targetPosition)
+                is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
+                is GameModification.Step -> {}
+            }
+        }
+    }
+
+    // обновляет view
+    private fun reloadGameArea() {
+        clearBlocks()
+        for ((position, block) in world.board) {
+            val gameBlock = GameBlock(createTile(block))
+            setBlockAt(position, gameBlock)
+        }
+    }
+
+    private fun gameOver() {
+        TODO("not implemented")
     }
 
     companion object {
-        private val EMPTY_TILE_BLOCK = GameBlock(Tile.empty())
 
         private fun createTile(block: Drawable): Tile {
             return when (block) {
