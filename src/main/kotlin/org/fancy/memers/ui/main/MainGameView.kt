@@ -1,6 +1,7 @@
 package org.fancy.memers.ui.main
 
 import org.fancy.memers.ui.main.board.GameArea
+import org.fancy.memers.ui.main.escape.EscapeMenuView
 import org.hexworks.zircon.api.component.ColorTheme
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.grid.TileGrid
@@ -36,6 +37,11 @@ class MainGameView(
                 }
                 in KeyboardControls.MOVE_RIGHT -> {
                     gameArea.world.movePlayer(Position3D.create(1, 0, 0))
+                    Processed
+                }
+                in KeyboardControls.ESC -> {
+                    replaceWith(EscapeMenuView(tileGrid, theme, gameArea))
+                    screen.close()
                     Processed
                 }
                 else -> Pass
