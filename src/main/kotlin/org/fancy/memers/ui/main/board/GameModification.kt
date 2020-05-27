@@ -15,5 +15,5 @@ sealed class GameModification {
     class Attack(val attacker: Entity, val victim: Entity) : GameModification()
     object Step : GameModification()
 
-    // сюда пойдут спеллы отдельным классов
+    // сюда пойдут спеллы отдельным классов, типо SpellAttack ...
 }

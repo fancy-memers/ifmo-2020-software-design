@@ -14,7 +14,6 @@ class GameArea(val world: World) :
         Needed for:
         При попытке занять одну клетку существа атакуют друг друга
      */
-    val currentStepModifications = StepModifications()
 
     init {
         reloadGameArea()
@@ -22,9 +21,10 @@ class GameArea(val world: World) :
 
     // внешняя функция для отклика на модификацию
     fun apply(modification: GameModification) {
-        currentStepModifications.add(modification)
-        if (modification is GameModification.Step) {
-            makeStep()
+        when (modification) {
+            is GameModification.Move -> world.move(modification.entity, modification.targetPosition)
+            is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
+            is GameModification.Step -> makeStep()
         }
     }
 
@@ -32,15 +32,15 @@ class GameArea(val world: World) :
     private fun makeStep() {
         makeAIModification()
 
-        applyCurrentStep(currentStepModifications)
         reloadGameArea()
-        currentStepModifications.clear()
 
         if (world.player.isDead) {
             gameOver()
         }
-        println(world.player)
-        println(world.enemies)
+
+        // FIXME: remove DEBUG logging
+        println("Player: ${world.player}")
+        println("Enemies: ${world.enemies}")
         println()
     }
 
@@ -51,17 +51,6 @@ class GameArea(val world: World) :
             val behaviour = enemy.behaviour
             val modification = behaviour.gameAreaModification(enemy, this) ?: continue
             apply(modification)
-        }
-    }
-
-    // применяет все модификации игрового мира
-    private fun applyCurrentStep(modifications: StepModifications) {
-        for (modification in modifications.modifications) {
-            when (modification) {
-                is GameModification.Move -> world.move(modification.entity, modification.targetPosition)
-                is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
-                is GameModification.Step -> {}
-            }
         }
     }
 

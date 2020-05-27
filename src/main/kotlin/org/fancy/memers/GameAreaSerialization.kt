@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.fancy.memers.model.*
+import org.fancy.memers.model.ai.*
 import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
@@ -22,6 +23,12 @@ private val MOSHI = Moshi.Builder()
             .withSubtype(Entity::class.java, "entity")
             .withSubtype(Player::class.java, "player")
             .withSubtype(Enemy::class.java, "enemy")
+    )
+    .add(
+        PolymorphicJsonAdapterFactory.of(EnemyBehaviour::class.java, "enemyBehaviour")
+            .withSubtype(AggressiveEnemyBehaviour::class.java, "aggressiveEnemyBehaviour")
+            .withSubtype(FunkyEnemyBehaviour::class.java, "funkyEnemyBehaviour")
+            .withSubtype(PassiveEnemyBehaviour::class.java, "passiveEnemyBehaviour")
     )
     .add(KotlinJsonAdapterFactory())
     .build()
