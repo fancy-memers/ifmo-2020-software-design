@@ -1,10 +1,7 @@
 package org.fancy.memers.ui.main.board
 
 import kotlinx.collections.immutable.toImmutableList
-import org.fancy.memers.model.Creature
-import org.fancy.memers.model.Drawable
-import org.fancy.memers.model.Empty
-import org.fancy.memers.model.Enemy
+import org.fancy.memers.model.*
 import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
@@ -21,7 +18,7 @@ class GameArea(val world: World) :
     // внешняя функция для отклика на модификацию
     fun apply(modification: GameModification) {
         when (modification) {
-            is GameModification.Move -> {
+            is GameModification.BaseMove -> {
                 val targetCreature = world[modification.targetPosition] as? Creature
                 if (targetCreature != null) {
                     world.attack(modification.creature, targetCreature)
@@ -30,14 +27,16 @@ class GameArea(val world: World) :
                 }
             }
             is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
+            is GameModification.ConfusionSpellAttack -> world.confuse(modification.attacker, modification.victim)
             is GameModification.Step -> makeStep()
+            else -> throw IllegalArgumentException()
         }
     }
 
     // функция, которая делает нужный стафф в конце степа
     private fun makeStep() {
         makeAIModification()
-
+        applyEffects()
         reloadGameArea()
 
         if (world.player.isDead) {
@@ -58,6 +57,19 @@ class GameArea(val world: World) :
             val modification = behaviour.gameAreaModification(enemy, this) ?: continue
             apply(modification)
         }
+    }
+
+    private fun applyCreatureEffects(creature: Creature) {
+        creature.effects.map {
+            it.createModification(creature)
+        }.forEach { apply(it) }
+    }
+
+    private fun applyEffects() {
+        world.enemies.forEach { applyCreatureEffects(it) }
+        applyCreatureEffects(world.player)
+        world.enemies.forEach { it.updateEffects() }
+        world.player.updateEffects()
     }
 
     // обновляет view

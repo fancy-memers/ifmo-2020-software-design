@@ -1,5 +1,6 @@
 package org.fancy.memers.ui.main
 
+import org.fancy.memers.model.ConfusionEffect
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.GameModification
 import org.hexworks.zircon.api.component.ColorTheme

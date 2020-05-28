@@ -56,6 +56,13 @@ sealed class Creature(
         return "Entity(health=$health)"
     }
 
+    open val effects = mutableListOf<Effect>()
+
+    open fun updateEffects() {
+        effects.forEach { it.duration -= 1 }
+        effects.removeIf { !it.isActive }
+    }
+
     protected val initialHealth = health
     val isDead: Boolean get() = health <= 0
 
@@ -65,17 +72,20 @@ sealed class Creature(
         get() = !isDead
 
     companion object {
-        const val DEFAULT_ATTACK: Int = 20
+        const val DEFAULT_ATTACK: Int = 1
         const val INITIAL_HEALTH: Int = 100
     }
 }
 
 class Player(position: Position3D) : Creature(position) {
     override val symbol: Char get() = '@'
+
+    override fun toString(): String = "Player(health=$health, effects=$effects)"
+
     /*
-        Считает текущий цвет
-        minimumColor – изначальный цвет
-        maximumColor – цвет при 0 значении health
+     * Считает текущий цвет
+     * minimumColor – изначальный цвет
+     * maximumColor – цвет при 0 значении health
      */
     override val foregroundColor: TileColor
         get() = gradientColor(
@@ -86,8 +96,10 @@ class Player(position: Position3D) : Creature(position) {
     override val backgroundColor: TileColor get() = TileColor.fromString("#1e2320")
 }
 
-class Enemy(val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {
+open class Enemy(val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {
     override val symbol: Char get() = 'E'
+
+    override fun toString(): String = "Enemy(health=$health, behaviour=$behaviour, effects=$effects)"
 
     /*
         Считает текущий цвет

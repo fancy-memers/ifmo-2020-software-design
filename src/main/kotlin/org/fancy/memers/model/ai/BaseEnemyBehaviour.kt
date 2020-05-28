@@ -18,6 +18,8 @@ abstract class BaseEnemyBehaviour : EnemyBehaviour {
         return direction.endPoint
     }
 
+    override fun toString(): String = this::class.simpleName ?: error("Could not get simpleName")
+
     // сначала ищется таргет из возможных конфликтов по позиции, потом в радиусе 1 клетка
     protected fun supposedTarget(enemy: Enemy, gameArea: GameArea): Creature? {
         // TODO: можно вынести в Entity, типо range атаки
