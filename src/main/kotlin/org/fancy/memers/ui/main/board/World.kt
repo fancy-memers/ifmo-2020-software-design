@@ -5,7 +5,7 @@ import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
 class World(
-    val size: Size3D,
+    val boardSize: Size3D,
     val board: MutableMap<Position3D, Block>
 ) {
 
@@ -13,17 +13,18 @@ class World(
     val player: Player = board.values.filterIsInstance<Player>().single()
     val enemies: MutableList<Enemy> = board.values.filterIsInstance<Enemy>().toMutableList()
 
-
-    private fun setEntity(position: Position3D, entity: Entity) {
-        board[position] = entity
-        entity.position = position
+    private fun setCreature(position: Position3D, creature: Creature) {
+        board[position] = creature
+        creature.position = position
     }
 
-    private fun removeEntity(position: Position3D) {
+    operator fun get(key: Position3D): Block? = board[key]
+
+    private fun removeCreature(position: Position3D) {
         board.remove(position)
     }
 
-    fun move(entity: Entity, newPosition: Position3D) {
+    fun move(creature: Creature, newPosition: Position3D) {
         val groundPosition = newPosition.withZ(0)
         val groundBlock = board[groundPosition] ?: return
         val targetBlock = board[newPosition]
@@ -32,18 +33,17 @@ class World(
         // или придумать какое-то другое поведение
         if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
 
-        removeEntity(entity.position)
-        setEntity(newPosition, entity)
+        removeCreature(creature.position)
+        setCreature(newPosition, creature)
     }
 
-    fun attack(entity: Entity, targetEntity: Entity) {
-        targetEntity.health -= entity.attack
-        if (targetEntity.health < 0) {
-            enemies.remove(targetEntity)
-            removeEntity(targetEntity.position)
+    fun attack(creature: Creature, targetCreature: Creature) {
+        targetCreature.health -= creature.attack
+        if (targetCreature.health <= 0) {
+            enemies.remove(targetCreature)
+            removeCreature(targetCreature.position)
         }
     }
-
 
     companion object {
         // do not remove even if empty, needed to allow `World.deserialize(...)`

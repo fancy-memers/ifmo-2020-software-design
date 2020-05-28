@@ -1,20 +1,19 @@
 package org.fancy.memers.ui.main.board
 
 import kotlinx.collections.immutable.toImmutableList
+import org.fancy.memers.model.Creature
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
+import org.fancy.memers.model.Enemy
 import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
 
 class GameArea(val world: World) :
-    RogueBaseGameArea<Tile, GameAreaBlock<Tile>>(initialVisibleSize = world.size, initialActualSize = world.size) {
-    /*
-        Запоминаем модификации мира на текущем шаге
-        Needed for:
-        При попытке занять одну клетку существа атакуют друг друга
-     */
-
+    RogueBaseGameArea<Tile, GameAreaBlock<Tile>>(
+        initialVisibleSize = world.boardSize,
+        initialActualSize = world.boardSize
+    ) {
     init {
         reloadGameArea()
     }
@@ -22,7 +21,14 @@ class GameArea(val world: World) :
     // внешняя функция для отклика на модификацию
     fun apply(modification: GameModification) {
         when (modification) {
-            is GameModification.Move -> world.move(modification.entity, modification.targetPosition)
+            is GameModification.Move -> {
+                val targetCreature = world[modification.targetPosition] as? Creature
+                if (targetCreature != null) {
+                    world.attack(modification.creature, targetCreature)
+                } else {
+                    world.move(modification.creature, modification.targetPosition)
+                }
+            }
             is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
             is GameModification.Step -> makeStep()
         }
@@ -57,7 +63,7 @@ class GameArea(val world: World) :
     // обновляет view
     private fun reloadGameArea() {
         clearBlocks()
-        for ((position, block) in world.board) {
+        for ((position, block) in world.board.filter { it.value.isVisible }) {
             val gameBlock = GameBlock(createTile(block))
             setBlockAt(position, gameBlock)
         }
@@ -72,6 +78,11 @@ class GameArea(val world: World) :
         private fun createTile(block: Drawable): Tile {
             return when (block) {
                 is Empty -> Tile.empty()
+                is Enemy -> Tile.newBuilder()
+                    .withCharacter(block.symbol)
+                    .withForegroundColor(block.foregroundColor)
+                    .withBackgroundColor(block.backgroundColor)
+                    .buildCharacterTile()
                 else -> Tile.newBuilder()
                     .withCharacter(block.symbol)
                     .withForegroundColor(block.foregroundColor)

@@ -11,7 +11,7 @@ import org.hexworks.zircon.api.data.Size3D
 
 private val MOSHI = Moshi.Builder()
     .add(
-        PolymorphicJsonAdapterFactory.of(Entity::class.java, "entityType")
+        PolymorphicJsonAdapterFactory.of(Creature::class.java, "entityType")
             .withSubtype(Player::class.java, "player")
             .withSubtype(Enemy::class.java, "enemy")
     )
@@ -20,7 +20,7 @@ private val MOSHI = Moshi.Builder()
             .withSubtype(Empty::class.java, "empty")
             .withSubtype(Floor::class.java, "floor")
             .withSubtype(Wall::class.java, "wall")
-            .withSubtype(Entity::class.java, "entity")
+            .withSubtype(Creature::class.java, "entity")
             .withSubtype(Player::class.java, "player")
             .withSubtype(Enemy::class.java, "enemy")
     )
@@ -43,7 +43,7 @@ private data class WorldWrapper(
 )
 
 fun World.serialize(): String {
-    val wrapper = WorldWrapper(size, board.keys.toList(), board.values.toList())
+    val wrapper = WorldWrapper(boardSize, board.keys.toList(), board.values.toList())
     return ADAPTER.toJson(wrapper)
 }
 

@@ -23,6 +23,7 @@ dependencies {
     api("com.squareup.moshi:moshi:1.9.2")
     api("com.squareup.moshi:moshi-kotlin:1.9.2")
     api("com.squareup.moshi:moshi-adapters:1.9.2")
+    api("com.github.ajalt:colormath:1.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 
