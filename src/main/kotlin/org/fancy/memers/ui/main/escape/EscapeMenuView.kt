@@ -1,10 +1,12 @@
 package org.fancy.memers.ui.main.escape
 
 import org.fancy.memers.deserialize
+import org.fancy.memers.serialize
 import org.fancy.memers.ui.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.World
+import org.fancy.memers.ui.start.StartScreenConfig
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.ColorTheme
 import org.hexworks.zircon.api.component.ComponentAlignment
@@ -19,18 +21,26 @@ import org.hexworks.zircon.api.view.base.BaseView
 import java.io.File
 
 
-class EscapeMenuView(private val tileGrid: TileGrid
-                     , theme: ColorTheme
-                     , private val gameArea: GameArea) : BaseView(tileGrid, theme) {
+class EscapeMenuView(
+    private val tileGrid: TileGrid
+    , theme: ColorTheme
+    , private val gameArea: GameArea
+) : BaseView(tileGrid, theme) {
 
     private val returnButton = EscapeScreenConfig.BASE_BUTTON_BUILDER
         .withText(EscapeScreenConfig.RETURN)
         .withAlignmentWithin(screen, ComponentAlignment.CENTER)
         .build()
 
+
     private val saveToFile = EscapeScreenConfig.BASE_BUTTON_BUILDER
         .withAlignmentAround(returnButton, ComponentAlignment.BOTTOM_CENTER)
         .withText(EscapeScreenConfig.SAVE_FILE)
+        .build()
+
+    private val startFromFile = StartScreenConfig.BASE_BUTTON_BUILDER
+        .withAlignmentAround(saveToFile, ComponentAlignment.BOTTOM_CENTER)
+        .withText(EscapeScreenConfig.START_FILE)
         .build()
 
     private val filePath = Components.textArea()
@@ -63,12 +73,24 @@ class EscapeMenuView(private val tileGrid: TileGrid
                 )
             }
         )
+
+        startFromFile.processKeyboardEvents(
+            KeyboardEventType.KEY_PRESSED,
+            filterKeyboardEvent(KeyCode.ENTER) { _, _ ->
+                startWithFile(
+                    File(
+                        filePath.text
+                    )
+                )
+            }
+        )
+
         returnButton.processComponentEvents(ComponentEventType.ACTIVATED) { this.returnToGame() }
         saveToFile.processComponentEvents(ComponentEventType.ACTIVATED) { this.saveToFile(File(filePath.text)) }
-
+        startFromFile.processComponentEvents(ComponentEventType.ACTIVATED) { this.startWithFile(File(filePath.text)) }
 
         screen.addComponent(header)
-        screen.addComponents(returnButton, saveToFile)
+        screen.addComponents(returnButton, saveToFile, startFromFile)
         screen.addComponent(filePath)
         returnButton.requestFocus()
     }
@@ -81,7 +103,7 @@ class EscapeMenuView(private val tileGrid: TileGrid
     }
 
     private fun saveToFile(file: File) {
-//        val save = serialize(gameArea)
+        file.writeText(gameArea.world.serialize())
     }
 
     private fun returnToGame() {
