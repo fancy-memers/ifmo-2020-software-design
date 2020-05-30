@@ -35,7 +35,6 @@ class World(
         if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
 
         val newPosition2D = newPosition.to2DPosition()
-        log("${creature.displayName} moved to ${newPosition2D.prettyString()}")
         removeCreature(creature.position)
         setCreature(newPosition, creature)
     }
