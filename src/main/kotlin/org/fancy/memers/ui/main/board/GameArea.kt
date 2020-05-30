@@ -1,34 +1,88 @@
 package org.fancy.memers.ui.main.board
 
+import kotlinx.collections.immutable.toImmutableList
+import org.fancy.memers.model.Creature
 import org.fancy.memers.model.Drawable
 import org.fancy.memers.model.Empty
-import org.hexworks.zircon.api.data.Position3D
+import org.fancy.memers.model.Enemy
+import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
-import org.hexworks.zircon.api.game.base.BaseGameArea
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
 
-class GameArea(val world: World):
-    BaseGameArea<Tile, GameAreaBlock<Tile>>(initialVisibleSize = world.size, initialActualSize = world.size) {
-
+class GameArea(val world: World) :
+    RogueBaseGameArea<Tile, GameAreaBlock<Tile>>(
+        initialVisibleSize = world.boardSize,
+        initialActualSize = world.boardSize
+    ) {
     init {
-        world.addBlockChangeEventHandler { updateBlock(it) }
-        for (position in world.board.keys) {
-            updateBlock(position)
+        reloadGameArea()
+    }
+
+    // внешняя функция для отклика на модификацию
+    fun apply(modification: GameModification) {
+        when (modification) {
+            is GameModification.Move -> {
+                val targetCreature = world[modification.targetPosition] as? Creature
+                if (targetCreature != null) {
+                    world.attack(modification.creature, targetCreature)
+                } else {
+                    world.move(modification.creature, modification.targetPosition)
+                }
+            }
+            is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
+            is GameModification.Step -> makeStep()
         }
     }
 
-    private fun updateBlock(position: Position3D) {
-        val block = world.board[position]
-        val gameBlock = if (block != null) GameBlock(createTile(block)) else EMPTY_TILE_BLOCK
-        setBlockAt(position, gameBlock)
+    // функция, которая делает нужный стафф в конце степа
+    private fun makeStep() {
+        makeAIModification()
+
+        reloadGameArea()
+
+        if (world.player.isDead) {
+            gameOver()
+        }
+
+        // FIXME: remove DEBUG logging
+        println("Player: ${world.player}")
+        println("Enemies: ${world.enemies}")
+        println()
+    }
+
+    // function to make enemies move/attack etc.
+    private fun makeAIModification() {
+        val enemies = world.enemies.toImmutableList()
+        for (enemy in enemies) {
+            val behaviour = enemy.behaviour
+            val modification = behaviour.gameAreaModification(enemy, this) ?: continue
+            apply(modification)
+        }
+    }
+
+    // обновляет view
+    private fun reloadGameArea() {
+        clearBlocks()
+        for ((position, block) in world.board.filter { it.value.isVisible }) {
+            val gameBlock = GameBlock(createTile(block))
+            setBlockAt(position, gameBlock)
+        }
+    }
+
+    private fun gameOver() {
+        TODO("not implemented")
     }
 
     companion object {
-        private val EMPTY_TILE_BLOCK = GameBlock(Tile.empty())
 
         private fun createTile(block: Drawable): Tile {
             return when (block) {
                 is Empty -> Tile.empty()
+                is Enemy -> Tile.newBuilder()
+                    .withCharacter(block.symbol)
+                    .withForegroundColor(block.foregroundColor)
+                    .withBackgroundColor(block.backgroundColor)
+                    .buildCharacterTile()
                 else -> Tile.newBuilder()
                     .withCharacter(block.symbol)
                     .withForegroundColor(block.foregroundColor)

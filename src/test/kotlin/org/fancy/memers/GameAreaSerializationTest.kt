@@ -13,7 +13,7 @@ internal class GameAreaSerializationTest {
         val worldBefore = World(size, board.toMutableMap())
 
         val worldAfter = World.deserialize(worldBefore.serialize())
-        check(worldBefore.size == worldAfter.size)
+        check(worldBefore.boardSize == worldAfter.boardSize)
         // for debug
         for (position in worldBefore.board.keys) {
             val blockBefore = worldBefore.board[position]
