@@ -34,7 +34,6 @@ class World(
         // или придумать какое-то другое поведение
         if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
 
-        val newPosition2D = newPosition.to2DPosition()
         removeCreature(creature.position)
         setCreature(newPosition, creature)
     }
