@@ -1,6 +1,7 @@
 package org.fancy.memers.ui.main.board
 
 import org.fancy.memers.model.*
+import org.fancy.memers.utils.logger.log
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
@@ -33,13 +34,18 @@ class World(
         // или придумать какое-то другое поведение
         if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
 
+        val newPosition2D = newPosition.to2DPosition()
+        log("${creature.displayName} moved to ${newPosition2D.prettyString()}")
         removeCreature(creature.position)
         setCreature(newPosition, creature)
     }
 
     fun attack(creature: Creature, targetCreature: Creature) {
-        targetCreature.health -= creature.attack
+        val damage = creature.attack
+        targetCreature.health -= damage
+        log("${creature.displayName} attacks ${targetCreature.displayName} for $damage hp")
         if (targetCreature.health <= 0) {
+            log("${targetCreature.displayName} is dead")
             enemies.remove(targetCreature)
             removeCreature(targetCreature.position)
         }

@@ -13,6 +13,8 @@ interface Drawable {
         get() = TileColor.defaultBackgroundColor()
 
     val isVisible: Boolean
+
+    val displayName: String
 }
 
 /*

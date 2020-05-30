@@ -1,5 +1,6 @@
 package org.fancy.memers.model
 
+import org.hexworks.zircon.api.data.Position
 import org.hexworks.zircon.api.data.Position3D
 
 fun Position3D.contains2D(xRange: IntRange, yRange: IntRange): Boolean {
@@ -9,6 +10,10 @@ fun Position3D.contains2D(xRange: IntRange, yRange: IntRange): Boolean {
 fun Position3D.contains3D(xRange: IntRange, yRange: IntRange, zRange: IntRange): Boolean {
     return xRange.contains(x) && yRange.contains(y) && zRange.contains(z)
 }
+
+fun Position.prettyString(): String = "($x, $y)"
+
+fun Position3D.prettyString(): String = "($x, $y, $z)"
 
 // позиции соседей по горизонтали и вертикали в радиусе 1 клетка
 fun Position3D.hvNeighbours(): List<Position3D> {
