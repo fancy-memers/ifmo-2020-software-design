@@ -6,7 +6,7 @@ import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.graphics.Symbols
 import java.util.*
 
-sealed class Creature(var position: Position3D): Block() {
+sealed class Creature(var position: Position3D, open val defence: Int = 0): Block() {
     override fun equals(other: Any?): Boolean = super.equals(other) && position == (other as Creature).position
     override fun hashCode(): Int = Objects.hashCode(position)
     override fun toString(): String {
@@ -49,7 +49,7 @@ sealed class Creature(var position: Position3D): Block() {
 
     open var health: Int = maxHealth
 
-    val attack: Int
+    open val attack: Int
         get() = strength * attackMultiplier
 
     open val effects = mutableListOf<Effect>()
@@ -77,6 +77,11 @@ sealed class Creature(var position: Position3D): Block() {
 }
 
 class Player(position: Position3D) : Creature(position) {
+    val inventory: Inventory = Inventory()
+
+    override val attack: Int get() = super.attack + inventory.activeItems.sumBy { it.attackBonus }
+    override val defence: Int get() = inventory.activeItems.sumBy { it.attackBonus }
+
     override val symbol: Char get() = '@'
 
     override fun toString(): String = "Player(level=$level, health=$health, effects=$effects)"
