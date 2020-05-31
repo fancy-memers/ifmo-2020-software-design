@@ -65,13 +65,7 @@ class EscapeMenuView(
 
         saveToFile.processKeyboardEvents(
             KeyboardEventType.KEY_PRESSED,
-            filterKeyboardEvent(KeyCode.ENTER) { _, _ ->
-                saveToFile(
-                    File(
-                        filePath.text
-                    )
-                )
-            }
+            filterKeyboardEvent(KeyCode.ENTER) { _, _ -> saveToFile( File(filePath.text) ) }
         )
 
         startFromFile.processKeyboardEvents(
