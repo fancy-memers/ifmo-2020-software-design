@@ -71,6 +71,8 @@ sealed class Creature(
     override val isVisible: Boolean
         get() = !isDead
 
+    inline fun <reified EffectType: Effect> hasEffect() = effects.indexOfFirst { it is EffectType } != -1
+
     companion object {
         const val DEFAULT_ATTACK: Int = 1
         const val INITIAL_HEALTH: Int = 100

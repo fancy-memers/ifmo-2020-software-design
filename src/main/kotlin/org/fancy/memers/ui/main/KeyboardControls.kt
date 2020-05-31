@@ -7,4 +7,5 @@ object KeyboardControls {
     val MOVE_DOWN = listOf(KeyCode.KEY_S, KeyCode.DOWN)
     val MOVE_LEFT = listOf(KeyCode.KEY_A, KeyCode.LEFT)
     val MOVE_RIGHT = listOf(KeyCode.KEY_D, KeyCode.RIGHT)
+    val SKIP_TURN = listOf(KeyCode.KEY_N)
 }

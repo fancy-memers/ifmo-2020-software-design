@@ -27,7 +27,14 @@ class MainGameView(
 
     private fun receive(event: KeyboardEvent): UIEventResponse {
         val playerMove: (Position3D) -> GameModification =
-            { position -> GameModification.Move(gameArea.world.player, position) }
+            { position ->
+                if (gameArea.world.player.hasEffect<ConfusionEffect>()) {
+                    GameModification.Identity
+                }
+                else {
+                    GameModification.Move(gameArea.world.player, position)
+                }
+            }
         when (event.code) {
             in KeyboardControls.MOVE_UP ->
                 gameArea.apply(playerMove(Position3D.create(0, -1, 0)))
@@ -37,6 +44,8 @@ class MainGameView(
                 gameArea.apply(playerMove(Position3D.create(-1, 0, 0)))
             in KeyboardControls.MOVE_RIGHT ->
                 gameArea.apply(playerMove(Position3D.create(1, 0, 0)))
+            in KeyboardControls.SKIP_TURN ->
+                gameArea.apply(GameModification.Step)
             else -> return Pass
         }
         gameArea.apply(GameModification.Step)

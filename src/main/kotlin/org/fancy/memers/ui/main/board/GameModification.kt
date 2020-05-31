@@ -5,6 +5,8 @@ import org.fancy.memers.model.hvNeighbours
 import org.hexworks.zircon.api.data.Position3D
 
 sealed class GameModification {
+    object Identity: GameModification()
+
     abstract class BaseMove(val creature: Creature): GameModification() {
         abstract val targetPosition: Position3D
     }
