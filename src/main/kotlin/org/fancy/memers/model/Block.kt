@@ -23,10 +23,11 @@ class Empty : Block() {
 }
 
 class Floor : Block() {
+    var item: Item? = null
     override val symbol: Char
-        get() = Symbols.INTERPUNCT
+        get() = item?.symbol ?: Symbols.INTERPUNCT
     override val foregroundColor: TileColor
-        get() = TileColor.fromString("#75715E")
+        get() = TileColor.fromString(if (item == null) "#75715E" else "#FFEB3B")
     override val backgroundColor: TileColor
         get() = TileColor.fromString("#1e2320", 100)
     override val canStepOn: Boolean

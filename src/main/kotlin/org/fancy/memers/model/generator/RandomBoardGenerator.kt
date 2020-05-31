@@ -6,9 +6,6 @@ import io.github.serpro69.kfaker.create
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
 
-
-
-
 abstract class RandomBoardGenerator(seed: Int? = null) : BoardGenerator {
     protected val random: Random = seed?.let { Random(it) } ?: Random
 
