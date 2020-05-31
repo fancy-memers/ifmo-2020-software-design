@@ -2,11 +2,11 @@ package org.fancy.memers.ui.main.escape
 
 import org.fancy.memers.deserialize
 import org.fancy.memers.serialize
-import org.fancy.memers.ui.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.World
 import org.fancy.memers.ui.start.StartScreenConfig
+import org.fancy.memers.utils.filterKeyboardEvent
 import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.ColorTheme
 import org.hexworks.zircon.api.component.ComponentAlignment
