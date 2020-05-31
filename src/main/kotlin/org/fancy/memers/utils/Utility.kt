@@ -1,4 +1,4 @@
-package org.fancy.memers.ui
+package org.fancy.memers.utils
 
 import org.hexworks.zircon.api.uievent.KeyCode
 import org.hexworks.zircon.api.uievent.KeyboardEvent

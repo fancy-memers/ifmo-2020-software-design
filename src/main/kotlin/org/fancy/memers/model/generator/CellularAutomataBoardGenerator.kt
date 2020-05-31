@@ -29,7 +29,8 @@ class CellularAutomataBoardGenerator(
         }
         repeat(numberEnemies) {
             val enemyPosition = randomEmptyPosition(gameBoard)
-            gameBoard[enemyPosition] = Enemy(AggressiveEnemyBehaviour(), enemyPosition)
+
+            gameBoard[enemyPosition] = Enemy(faker.name.firstName(), AggressiveEnemyBehaviour(), enemyPosition)
         }
         return gameBoard
     }

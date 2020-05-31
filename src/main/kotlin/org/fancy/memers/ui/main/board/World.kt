@@ -1,6 +1,7 @@
 package org.fancy.memers.ui.main.board
 
 import org.fancy.memers.model.*
+import org.fancy.memers.utils.logger.log
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
@@ -38,8 +39,11 @@ class World(
     }
 
     fun attack(creature: Creature, targetCreature: Creature) {
-        targetCreature.health -= creature.attack
+        val damage = creature.attack
+        targetCreature.health -= damage
+        log("${creature.displayName} attacks ${targetCreature.displayName} for $damage hp")
         if (targetCreature.health <= 0) {
+            log("${targetCreature.displayName} is dead")
             enemies.remove(targetCreature)
             removeCreature(targetCreature.position)
         }
@@ -48,11 +52,11 @@ class World(
     fun confuse(creature: Creature, targetCreature: Creature) {
         when (val effectIndex = targetCreature.effects.indexOfFirst { it is ConfusionEffect }) {
             -1 -> {
-                println("$creature confuses $targetCreature")
+                log("${creature.displayName} confuses ${targetCreature.displayName}")
                 targetCreature.effects.add(ConfusionEffect())
             }
             else -> {
-                println("$creature updates confusion $targetCreature")
+                log("${creature.displayName} updates confusion ${targetCreature.displayName}")
                 targetCreature.effects[effectIndex] = ConfusionEffect()
             }
         }

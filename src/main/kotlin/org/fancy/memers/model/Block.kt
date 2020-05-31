@@ -21,6 +21,8 @@ class Empty : Block() {
 
     override val canStepOn: Boolean
         get() = true
+    override val displayName: String
+        get() = ""
 }
 
 class Floor : Block() {
@@ -32,6 +34,8 @@ class Floor : Block() {
         get() = TileColor.fromString("#1e2320", 100)
     override val canStepOn: Boolean
         get() = true
+    override val displayName: String
+        get() = "Floor"
 }
 
 class Wall : Block() {
@@ -43,6 +47,8 @@ class Wall : Block() {
         get() = TileColor.fromString("#3E3D32")
     override val canStepOn: Boolean
         get() = false
+    override val displayName: String
+        get() = "Wall"
 }
 
 sealed class Creature(
@@ -96,9 +102,11 @@ class Player(position: Position3D) : Creature(position) {
             -(initialHealth - health) / initialHealth.toDouble()
         )
     override val backgroundColor: TileColor get() = TileColor.fromString("#1e2320")
+    override val displayName: String
+        get() = "Player"
 }
 
-open class Enemy(val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {
+open class Enemy(private val name: String, val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {
     override val symbol: Char get() = 'E'
 
     override fun toString(): String = "Enemy(health=$health, behaviour=$behaviour, effects=$effects)"
@@ -115,4 +123,6 @@ open class Enemy(val behaviour: EnemyBehaviour, position: Position3D) : Creature
             ratio = (initialHealth - health) / initialHealth.toDouble()
         )
     override val backgroundColor: TileColor get() = TileColor.fromString("#1e2320")
+    override val displayName: String
+        get() = name
 }

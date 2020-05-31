@@ -20,15 +20,19 @@ class GameArea(val world: World) :
         when (modification) {
             is GameModification.BaseMove -> {
                 val targetCreature = world[modification.targetPosition] as? Creature
-                if (targetCreature != null) {
+                if (modification.creature is Player && targetCreature != null) {
                     world.attack(modification.creature, targetCreature)
-                } else {
+                }
+                else {
                     world.move(modification.creature, modification.targetPosition)
                 }
             }
-            is GameModification.Attack -> world.attack(modification.attacker, modification.victim)
+            is GameModification.Attack -> {
+                world.attack(modification.attacker, modification.victim)
+            }
             is GameModification.ConfusionSpellAttack -> world.confuse(modification.attacker, modification.victim)
             is GameModification.Step -> makeStep()
+            is GameModification.Identity -> Unit
             else -> throw IllegalArgumentException()
         }
     }

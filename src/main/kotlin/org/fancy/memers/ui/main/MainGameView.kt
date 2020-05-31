@@ -3,11 +3,15 @@ package org.fancy.memers.ui.main
 import org.fancy.memers.model.ConfusionEffect
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.GameModification
+import org.fancy.memers.utils.logger.LogEvent
+import org.hexworks.cobalt.events.api.KeepSubscription
+import org.hexworks.cobalt.events.api.subscribeTo
 import org.hexworks.zircon.api.component.ColorTheme
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
+import org.hexworks.zircon.internal.Zircon
 
 class MainGameView(
     tileGrid: TileGrid,
@@ -20,6 +24,7 @@ class MainGameView(
     private val board = BoardFragment(gameArea, screen)
 
     init {
+        subscribeToLogEvents()
         screen.handleKeyboardEvents(KeyboardEventType.KEY_RELEASED) { event, _ ->
             receive(event)
         }
@@ -44,12 +49,19 @@ class MainGameView(
                 gameArea.apply(playerMove(Position3D.create(-1, 0, 0)))
             in KeyboardControls.MOVE_RIGHT ->
                 gameArea.apply(playerMove(Position3D.create(1, 0, 0)))
-            in KeyboardControls.SKIP_TURN ->
-                gameArea.apply(GameModification.Step)
+            in KeyboardControls.SKIP_TURN -> GameModification.Identity
             else -> return Pass
         }
         gameArea.apply(GameModification.Step)
         return Processed
+    }
+
+    private fun subscribeToLogEvents() {
+        Zircon.eventBus.subscribeTo<LogEvent> {
+            logPanel.root.addParagraph(it.content)
+            KeepSubscription
+        }
+        gameArea.apply(GameModification.Step)
     }
 
     override fun onDock() {

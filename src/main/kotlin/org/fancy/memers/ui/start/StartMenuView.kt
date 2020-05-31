@@ -2,7 +2,7 @@ package org.fancy.memers.ui.start
 
 import org.fancy.memers.deserialize
 import org.fancy.memers.model.generator.BoardGenerator
-import org.fancy.memers.ui.filterKeyboardEvent
+import org.fancy.memers.utils.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
 import org.fancy.memers.ui.main.MainScreenConfig
 import org.fancy.memers.ui.main.board.GameArea
@@ -54,11 +54,7 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         startFromFile.processKeyboardEvents(
             KeyboardEventType.KEY_PRESSED,
             filterKeyboardEvent(KeyCode.ENTER) { _, _ ->
-                startWithFile(
-                    File(
-                        filePath.text
-                    )
-                )
+                startWithFile(File(filePath.text))
             }
         )
         startGenerated.processComponentEvents(ComponentEventType.ACTIVATED) { this.startGeneratedWorld() }
