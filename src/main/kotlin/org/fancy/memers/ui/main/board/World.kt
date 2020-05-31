@@ -49,6 +49,19 @@ class World(
         }
     }
 
+    fun confuse(creature: Creature, targetCreature: Creature) {
+        when (val effectIndex = targetCreature.effects.indexOfFirst { it is ConfusionEffect }) {
+            -1 -> {
+                log("${creature.displayName} confuses ${targetCreature.displayName}")
+                targetCreature.effects.add(ConfusionEffect())
+            }
+            else -> {
+                log("${creature.displayName} updates confusion ${targetCreature.displayName}")
+                targetCreature.effects[effectIndex] = ConfusionEffect()
+            }
+        }
+    }
+
     companion object {
         // do not remove even if empty, needed to allow `World.deserialize(...)`
     }

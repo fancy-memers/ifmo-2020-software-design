@@ -1,5 +1,6 @@
 package org.fancy.memers.ui.main
 
+import org.fancy.memers.model.ConfusionEffect
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.GameModification
 import org.fancy.memers.ui.main.escape.EscapeMenuView
@@ -33,7 +34,14 @@ class MainGameView(
 
     private fun receive(event: KeyboardEvent): UIEventResponse {
         val playerMove: (Position3D) -> GameModification =
-            { position -> GameModification.Move(gameArea.world.player, position) }
+            { position ->
+                if (gameArea.world.player.hasEffect<ConfusionEffect>()) {
+                    GameModification.Identity
+                }
+                else {
+                    GameModification.Move(gameArea.world.player, position)
+                }
+            }
         when (event.code) {
             in KeyboardControls.MOVE_UP ->
                 gameArea.apply(playerMove(Position3D.create(0, -1, 0)))
@@ -43,6 +51,7 @@ class MainGameView(
                 gameArea.apply(playerMove(Position3D.create(-1, 0, 0)))
             in KeyboardControls.MOVE_RIGHT ->
                 gameArea.apply(playerMove(Position3D.create(1, 0, 0)))
+            in KeyboardControls.SKIP_TURN -> GameModification.Identity
             in KeyboardControls.ESCAPE_MENU -> {
                 replaceWith(EscapeMenuView(tileGrid, theme, gameArea))
                 screen.close()

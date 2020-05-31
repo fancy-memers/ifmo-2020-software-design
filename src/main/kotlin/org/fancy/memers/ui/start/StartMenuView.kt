@@ -54,11 +54,7 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         startFromFile.processKeyboardEvents(
             KeyboardEventType.KEY_PRESSED,
             filterKeyboardEvent(KeyCode.ENTER) { _, _ ->
-                startWithFile(
-                    File(
-                        filePath.text
-                    )
-                )
+                startWithFile(File(filePath.text))
             }
         )
         startGenerated.processComponentEvents(ComponentEventType.ACTIVATED) { this.startGeneratedWorld() }
