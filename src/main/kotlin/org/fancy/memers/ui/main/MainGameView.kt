@@ -2,6 +2,7 @@ package org.fancy.memers.ui.main
 
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.GameModification
+import org.fancy.memers.ui.main.escape.EscapeMenuView
 import org.fancy.memers.utils.logger.LogEvent
 import org.hexworks.cobalt.events.api.KeepSubscription
 import org.hexworks.cobalt.events.api.subscribeTo
@@ -13,7 +14,7 @@ import org.hexworks.zircon.api.view.base.BaseView
 import org.hexworks.zircon.internal.Zircon
 
 class MainGameView(
-    tileGrid: TileGrid,
+    val tileGrid: TileGrid,
     theme: ColorTheme,
     private val gameArea: GameArea
 ) : BaseView(tileGrid, theme) {
@@ -23,6 +24,7 @@ class MainGameView(
     private val board = BoardFragment(gameArea, screen)
 
     init {
+
         subscribeToLogEvents()
         screen.handleKeyboardEvents(KeyboardEventType.KEY_RELEASED) { event, _ ->
             receive(event)
@@ -41,6 +43,11 @@ class MainGameView(
                 gameArea.apply(playerMove(Position3D.create(-1, 0, 0)))
             in KeyboardControls.MOVE_RIGHT ->
                 gameArea.apply(playerMove(Position3D.create(1, 0, 0)))
+            in KeyboardControls.ESCAPE_MENU -> {
+                replaceWith(EscapeMenuView(tileGrid, theme, gameArea))
+                screen.close()
+                Processed
+            }
             else -> return Pass
         }
         gameArea.apply(GameModification.Step)
