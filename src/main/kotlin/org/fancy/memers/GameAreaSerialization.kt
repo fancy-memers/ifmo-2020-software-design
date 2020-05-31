@@ -1,88 +1,54 @@
 package org.fancy.memers
 
-import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.modules.serializersModuleOf
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.fancy.memers.model.*
-import org.fancy.memers.model.generator.BoardGenerator
+import org.fancy.memers.model.ai.*
 import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
-@Serializer(forClass = Position3D::class)
-private object Position3DSerializer : KSerializer<Position3D> {
-    @Serializable
-    private data class Position3DWrapper(val x: Int, val y: Int, val z: Int)
-
-    override val descriptor: SerialDescriptor = Position3DWrapper.serializer().descriptor
-
-    override fun serialize(encoder: Encoder, value: Position3D) {
-        val wrapper = with(value) { Position3DWrapper(x, y, z) }
-        Position3DWrapper.serializer().serialize(encoder, wrapper)
-    }
-
-    override fun deserialize(decoder: Decoder): Position3D {
-        val wrapper = Position3DWrapper.serializer().deserialize(decoder)
-        return with(wrapper) { Position3D.create(x, y, z) }
-    }
-}
-
-@Serializer(forClass = Size3D::class)
-private object Size3DSerializer : KSerializer<Size3D> {
-    @Serializable
-    private data class Size3DWrapper(val xLength: Int, val yLength: Int, val zLength: Int)
-
-    override val descriptor: SerialDescriptor = Size3DWrapper.serializer().descriptor
-
-    override fun serialize(encoder: Encoder, value: Size3D) {
-        val wrapper = with(value) { Size3DWrapper(xLength, yLength, zLength) }
-        Size3DWrapper.serializer().serialize(encoder, wrapper)
-    }
-
-    override fun deserialize(decoder: Decoder): Size3D {
-        val wrapper = Size3DWrapper.serializer().deserialize(decoder)
-        return with(wrapper) { Size3D.create(xLength, yLength, zLength) }
-    }
-}
-
-@Serializer(forClass = World::class)
-private object WorldSerializer : KSerializer<World> {
-    @Serializable
-    private data class WorldWrapper(
-        val size: @ContextualSerialization Size3D,
-        val board: Map<@ContextualSerialization Position3D, Block>
+private val MOSHI = Moshi.Builder()
+    .add(
+        PolymorphicJsonAdapterFactory.of(Creature::class.java, "entityType")
+            .withSubtype(Player::class.java, "player")
+            .withSubtype(Enemy::class.java, "enemy")
     )
-
-    override val descriptor: SerialDescriptor = WorldWrapper.serializer().descriptor
-
-    override fun serialize(encoder: Encoder, value: World) {
-        val wrapper = with(value) { WorldWrapper(size, actualBoard) }
-        WorldWrapper.serializer().serialize(encoder, wrapper)
-    }
-
-    override fun deserialize(decoder: Decoder): World {
-        val wrapper = WorldWrapper.serializer().deserialize(decoder)
-        val generator = object : BoardGenerator {
-            override fun generateMap(withPlayer: Boolean): Map<Position3D, Block> {
-                return wrapper.board
-            }
-        }
-        return World(wrapper.size, generator)
-    }
-}
-
-private val context = serializersModuleOf(
-    mapOf(
-        Position3D::class to Position3DSerializer,
-        Size3D::class to Size3DSerializer,
-        Empty::class to Empty.serializer(),
-        Floor::class to Floor.serializer(),
-        Wall::class to Wall.serializer(),
-        Player::class to Player.serializer()
+    .add(
+        PolymorphicJsonAdapterFactory.of(Block::class.java, "blockType")
+            .withSubtype(Empty::class.java, "empty")
+            .withSubtype(Floor::class.java, "floor")
+            .withSubtype(Wall::class.java, "wall")
+            .withSubtype(Creature::class.java, "entity")
+            .withSubtype(Player::class.java, "player")
+            .withSubtype(Enemy::class.java, "enemy")
     )
+    .add(
+        PolymorphicJsonAdapterFactory.of(EnemyBehaviour::class.java, "enemyBehaviour")
+            .withSubtype(AggressiveEnemyBehaviour::class.java, "aggressiveEnemyBehaviour")
+            .withSubtype(FunkyEnemyBehaviour::class.java, "funkyEnemyBehaviour")
+            .withSubtype(PassiveEnemyBehaviour::class.java, "passiveEnemyBehaviour")
+    )
+    .add(KotlinJsonAdapterFactory())
+    .build()
+private val ADAPTER = MOSHI.adapter(WorldWrapper::class.java)
+
+private data class WorldWrapper(
+    val size: Size3D,
+
+    // moshi does not have adapter for pairs: https://github.com/square/moshi/issues/508
+    val positions: List<Position3D>,
+    val blocks: List<Block>
 )
-private val json = Json(JsonConfiguration.Stable, context = context)
 
-fun World.serialize(): String = json.stringify(WorldSerializer, this)
-fun World.Companion.deserialize(data: String): World = json.parse(WorldSerializer, data)
+fun World.serialize(): String {
+    val wrapper = WorldWrapper(boardSize, board.keys.toList(), board.values.toList())
+    return ADAPTER.toJson(wrapper)
+}
+
+fun World.Companion.deserialize(json: String): World {
+    val wrapper = ADAPTER.fromJson(json)!!
+    val board = (wrapper.positions zip wrapper.blocks).toMap(mutableMapOf())
+    return World(wrapper.size, board)
+}

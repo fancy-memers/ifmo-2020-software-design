@@ -1,7 +1,8 @@
 package org.fancy.memers.ui.start
 
 import org.fancy.memers.deserialize
-import org.fancy.memers.ui.filterKeyboardEvent
+import org.fancy.memers.model.generator.BoardGenerator
+import org.fancy.memers.utils.filterKeyboardEvent
 import org.fancy.memers.ui.main.MainGameView
 import org.fancy.memers.ui.main.MainScreenConfig
 import org.fancy.memers.ui.main.board.GameArea
@@ -78,7 +79,9 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
     }
 
     private fun startGeneratedWorld() {
-        start(GameArea(World(MainScreenConfig.boardSize(screen))))
+        val size = MainScreenConfig.boardSize(screen)
+        val board = BoardGenerator.defaultGenerator(size).generateMap()
+        start(GameArea(World(size, board.toMutableMap())))
     }
 
     private fun start(gameArea: GameArea) {

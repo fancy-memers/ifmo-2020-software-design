@@ -1,44 +1,55 @@
 package org.fancy.memers.ui.main.board
 
-import org.fancy.memers.model.Empty
-import org.fancy.memers.model.Floor
-import org.fancy.memers.model.Player
-import org.fancy.memers.model.generator.BoardGenerator
+import org.fancy.memers.model.*
+import org.fancy.memers.utils.logger.log
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
-class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.defaultGenerator(size)) {
-    val actualBoard = generator.generateMap().toMutableMap()
+class World(
+    val boardSize: Size3D,
+    val board: MutableMap<Position3D, Block>
+) {
 
     // This should be fixed at generator level
-    val player = actualBoard.values.single { it is Player }
-    private val blockChangeEventHandlers = mutableListOf<(Position3D) -> Unit>()
+    val player: Player = board.values.filterIsInstance<Player>().single()
+    val enemies: MutableList<Enemy> = board.values.filterIsInstance<Enemy>().toMutableList()
 
-    fun addBlockChangeEventHandler(handler: (Position3D) -> Unit) {
-        blockChangeEventHandlers.add(handler)
+    private fun setCreature(position: Position3D, creature: Creature) {
+        board[position] = creature
+        creature.position = position
     }
 
-    private fun triggerBlockChangeEvent(position: Position3D) {
-        blockChangeEventHandlers.forEach { it(position) }
+    operator fun get(key: Position3D): Block? = board[key]
+
+    private fun removeCreature(position: Position3D) {
+        board.remove(position)
     }
 
-    fun movePlayer(diff: Position3D) {
-        val oldPlayerPosition = player.position
-        val newPlayerPosition = oldPlayerPosition.withRelative(diff)
+    fun move(creature: Creature, newPosition: Position3D) {
+        val groundPosition = newPosition.withZ(0)
+        val groundBlock = board[groundPosition] ?: return
+        val targetBlock = board[newPosition]
 
-        val targetBlockPosition = newPlayerPosition.withZ(0)
-        val targetBlock = actualBoard[targetBlockPosition] ?: return
-        if (targetBlock !is Empty && targetBlock !is Floor) {
-            return
+        // надо что-го говорить в таком случае
+        // или придумать какое-то другое поведение
+        if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
+
+        removeCreature(creature.position)
+        setCreature(newPosition, creature)
+    }
+
+    fun attack(creature: Creature, targetCreature: Creature) {
+        val damage = creature.attack
+        targetCreature.health -= damage
+        log("${creature.displayName} attacks ${targetCreature.displayName} for $damage hp")
+        if (targetCreature.health <= 0) {
+            log("${targetCreature.displayName} is dead")
+            enemies.remove(targetCreature)
+            removeCreature(targetCreature.position)
         }
-
-        actualBoard.remove(oldPlayerPosition)
-        actualBoard[newPlayerPosition] = player
-        player.position = newPlayerPosition
-
-        triggerBlockChangeEvent(oldPlayerPosition)
-        triggerBlockChangeEvent(newPlayerPosition)
     }
 
-    companion object
+    companion object {
+        // do not remove even if empty, needed to allow `World.deserialize(...)`
+    }
 }
