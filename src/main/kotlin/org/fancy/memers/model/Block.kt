@@ -106,7 +106,7 @@ class Player(position: Position3D) : Creature(position) {
         get() = "Player"
 }
 
-open class Enemy(private val name: String, val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {
+class Enemy(private val name: String, val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {
     override val symbol: Char get() = 'E'
 
     override fun toString(): String = "Enemy(health=$health, behaviour=$behaviour, effects=$effects)"
