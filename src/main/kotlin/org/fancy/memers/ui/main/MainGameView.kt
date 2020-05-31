@@ -43,7 +43,7 @@ class MainGameView(
                 gameArea.apply(playerMove(Position3D.create(-1, 0, 0)))
             in KeyboardControls.MOVE_RIGHT ->
                 gameArea.apply(playerMove(Position3D.create(1, 0, 0)))
-            in KeyboardControls.ESC -> {
+            in KeyboardControls.ESCAPE_MENU -> {
                 replaceWith(EscapeMenuView(tileGrid, theme, gameArea))
                 screen.close()
                 Processed
