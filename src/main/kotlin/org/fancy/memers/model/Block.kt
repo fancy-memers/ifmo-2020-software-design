@@ -26,10 +26,11 @@ class Empty : Block() {
 }
 
 class Floor : Block() {
+    var item: Item? = null
     override val symbol: Char
-        get() = Symbols.INTERPUNCT
+        get() = item?.symbol ?: Symbols.INTERPUNCT
     override val foregroundColor: TileColor
-        get() = TileColor.fromString("#75715E")
+        get() = TileColor.fromString(if (item == null) "#75715E" else "#FFEB3B")
     override val backgroundColor: TileColor
         get() = TileColor.fromString("#1e2320", 100)
     override val canStepOn: Boolean
@@ -53,8 +54,9 @@ class Wall : Block() {
 
 sealed class Creature(
     var position: Position3D,
-    val attack: Int = DEFAULT_ATTACK,
-    var health: Int = INITIAL_HEALTH
+    open val attack: Int = DEFAULT_ATTACK,
+    var health: Int = INITIAL_HEALTH,
+    open val defence: Int = 0
 ) : Block() {
     override fun equals(other: Any?): Boolean = super.equals(other) && position == (other as Creature).position
     override fun hashCode(): Int = Objects.hashCode(position)
@@ -86,6 +88,11 @@ sealed class Creature(
 }
 
 class Player(position: Position3D) : Creature(position) {
+    val inventory: Inventory = Inventory()
+
+    override val attack: Int = super.attack + inventory.activeItems.sumBy { it.attackBonus }
+    override val defence: Int = inventory.activeItems.sumBy { it.attackBonus }
+
     override val symbol: Char get() = '@'
 
     override fun toString(): String = "Player(health=$health, effects=$effects)"

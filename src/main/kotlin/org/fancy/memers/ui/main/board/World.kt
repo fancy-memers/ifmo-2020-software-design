@@ -34,15 +34,22 @@ class World(
         // или придумать какое-то другое поведение
         if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
 
+        if (creature is Player && groundBlock is Floor) {
+            groundBlock.item?.let {
+                creature.inventory.items += it
+                groundBlock.item = null
+            }
+        }
+
         removeCreature(creature.position)
         setCreature(newPosition, creature)
     }
 
     fun attack(creature: Creature, targetCreature: Creature) {
-        val damage = creature.attack
+        val damage = creature.attack - targetCreature.defence
         targetCreature.health -= damage
         log("${creature.displayName} attacks ${targetCreature.displayName} for $damage hp")
-        if (targetCreature.health <= 0) {
+        if (targetCreature.isDead) {
             log("${targetCreature.displayName} is dead")
             enemies.remove(targetCreature)
             removeCreature(targetCreature.position)

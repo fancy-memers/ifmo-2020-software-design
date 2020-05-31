@@ -1,7 +1,7 @@
 package org.fancy.memers.model.generator
 
 import org.fancy.memers.model.*
-import org.fancy.memers.model.ai.*
+import org.fancy.memers.model.ai.AggressiveEnemyBehaviour
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
@@ -32,6 +32,7 @@ class CellularAutomataBoardGenerator(
 
             gameBoard[enemyPosition] = Enemy(faker.name.firstName(), AggressiveEnemyBehaviour(), enemyPosition)
         }
+        addItems(gameBoard)
         return gameBoard
     }
 
@@ -50,5 +51,27 @@ class CellularAutomataBoardGenerator(
             board[position] = if (emptyCount >= wallsCount) Floor() else Wall()
         }
         return board
+    }
+
+    private fun addItems(board: MutableMap<Position3D, Block>) {
+        val itemProbability = 0.01
+        for (block in board.values) {
+            if (block is Floor && random.nextFloat() < itemProbability) {
+                block.item = generateRandomItem()
+            }
+        }
+    }
+
+    private fun generateRandomItem(): Item {
+        val attackBonus = random.nextInt(-ITEM_MAX_ATTACK_BONUS, ITEM_MAX_ATTACK_BONUS)
+        val defenceBonus = random.nextInt(ITEM_MAX_DEFENCE_BONUS)
+        val symbol = ITEMS_SYMBOLS.toCharArray().random(random)
+        return Item(attackBonus, defenceBonus, symbol)
+    }
+
+    companion object {
+        const val ITEMS_SYMBOLS: String = "!@#$%^&*"
+        const val ITEM_MAX_ATTACK_BONUS: Int = 10
+        const val ITEM_MAX_DEFENCE_BONUS: Int = 10
     }
 }
