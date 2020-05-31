@@ -25,8 +25,8 @@ class MainGameView(
     private val board = BoardFragment(gameArea, screen)
 
     init {
-
         subscribeToLogEvents()
+        WorldUpdate.publish(gameArea.world)
         screen.handleKeyboardEvents(KeyboardEventType.KEY_RELEASED) { event, _ ->
             receive(event)
         }

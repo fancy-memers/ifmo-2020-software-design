@@ -19,7 +19,7 @@ class AggressiveEnemyBehaviour : BaseEnemyBehaviour() {
 
 
     private fun selectRandomAttack(enemy: Enemy, creature: Creature): GameModification.BaseAttack {
-        return if (Random.nextFloat() >= CONFUSION_PROBABILITY) {
+        return if (Random.nextFloat() >= (1.0 - CONFUSION_PROBABILITY)) {
             GameModification.ConfusionSpellAttack(enemy, creature)
         }
         else {
@@ -28,6 +28,6 @@ class AggressiveEnemyBehaviour : BaseEnemyBehaviour() {
     }
 
     companion object {
-        const val CONFUSION_PROBABILITY = 0.5
+        const val CONFUSION_PROBABILITY = 0.3
     }
 }
