@@ -13,10 +13,7 @@ class AggressiveEnemyBehaviour : BaseEnemyBehaviour() {
         val attack = victim?.let {
             selectRandomAttack(enemy, it)
         }
-
         val movement = GameModification.Move(enemy, direction)
-
-//        val movement = GameModification.Identity
         return attack ?: movement
     }
 

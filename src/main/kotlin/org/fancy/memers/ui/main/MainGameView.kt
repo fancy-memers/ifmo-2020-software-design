@@ -61,7 +61,6 @@ class MainGameView(
             logPanel.root.addParagraph(it.content)
             KeepSubscription
         }
-        gameArea.apply(GameModification.Step)
     }
 
     override fun onDock() {
