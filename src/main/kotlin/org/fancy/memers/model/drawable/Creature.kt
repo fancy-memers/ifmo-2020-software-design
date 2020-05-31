@@ -1,12 +1,18 @@
-package org.fancy.memers.model
+package org.fancy.memers.model.drawable
 
+import org.fancy.memers.model.buffs.Effect
+import org.fancy.memers.model.buffs.Inventory
 import org.fancy.memers.model.ai.EnemyBehaviour
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.graphics.Symbols
 import java.util.*
+import kotlin.math.pow
 
-sealed class Creature(var position: Position3D, open val defence: Int = 0): Block() {
+sealed class Creature(var position: Position3D) : Block() {
+    val inventory: Inventory =
+        Inventory()
+
     override fun equals(other: Any?): Boolean = super.equals(other) && position == (other as Creature).position
     override fun hashCode(): Int = Objects.hashCode(position)
     override fun toString(): String {
@@ -19,7 +25,7 @@ sealed class Creature(var position: Position3D, open val defence: Int = 0): Bloc
     open var experience: Int = 0
 
     open val givesExperience: Int
-        get() = Math.pow(2.0, level.toDouble()).toInt() + experience
+        get() = 2.0.pow(level.toDouble()).toInt() + experience
 
     protected open fun increaseLevel() {
         level += 1
@@ -42,15 +48,18 @@ sealed class Creature(var position: Position3D, open val defence: Int = 0): Bloc
 
     open var strength: Int = DEFAULT_STRENGTH
     open var agility: Int = DEFAULT_AGILITY
-    open var intelligence: Int = DEAFULT_INTELLIGENCE
+    open var intelligence: Int =
+        DEAFULT_INTELLIGENCE
 
-    open val maxHealth: Int
+    val maxHealth: Int
         get() = strength * 4
 
-    open var health: Int = maxHealth
+    val defence: Int get() = inventory.sumBy { it.defenceBonus }
+
+    var health: Int = maxHealth
 
     open val attack: Int
-        get() = strength * attackMultiplier
+        get() = strength * attackMultiplier + inventory.sumBy { it.attackBonus }
 
     open val effects = mutableListOf<Effect>()
 
@@ -67,7 +76,7 @@ sealed class Creature(var position: Position3D, open val defence: Int = 0): Bloc
     override val isVisible: Boolean
         get() = !isDead
 
-    inline fun <reified EffectType: Effect> hasEffect() = effects.indexOfFirst { it is EffectType } != -1
+    inline fun <reified EffectType : Effect> hasEffect() = effects.indexOfFirst { it is EffectType } != -1
 
     companion object {
         const val DEFAULT_STRENGTH: Int = 5
@@ -77,18 +86,9 @@ sealed class Creature(var position: Position3D, open val defence: Int = 0): Bloc
 }
 
 class Player(position: Position3D) : Creature(position) {
-    val inventory: Inventory = Inventory()
-
-    override val attack: Int get() = super.attack + inventory.activeItems.sumBy { it.attackBonus }
-    override val defence: Int get() = inventory.activeItems.sumBy { it.attackBonus }
-
     override val symbol: Char get() = '@'
 
     override fun toString(): String = "Player(level=$level, health=$health, effects=$effects)"
-
-//    init {
-//        repeat(4) { increaseLevel() }
-//    }
 
     /*
      * Считает текущий цвет

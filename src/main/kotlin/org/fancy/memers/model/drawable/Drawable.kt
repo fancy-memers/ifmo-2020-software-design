@@ -1,5 +1,7 @@
-package org.fancy.memers.model
+package org.fancy.memers.model.drawable
 
+import org.fancy.memers.model.create
+import org.fancy.memers.model.toHSV
 import org.hexworks.zircon.api.color.TileColor
 import kotlin.math.abs
 

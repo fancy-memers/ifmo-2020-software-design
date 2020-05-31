@@ -1,6 +1,9 @@
 package org.fancy.memers.ui.main.board
 
-import org.fancy.memers.model.*
+import org.fancy.memers.model.buffs.ConfusionEffect
+import org.fancy.memers.model.drawable.*
+import org.fancy.memers.model.generator.BoardGenerator.Companion.boardLevel
+import org.fancy.memers.model.generator.WorldLevel
 import org.fancy.memers.ui.main.WorldUpdate
 import org.fancy.memers.utils.logger.log
 import org.hexworks.zircon.api.data.Position3D
@@ -34,12 +37,11 @@ class World(
         // или придумать какое-то другое поведение
         if (!groundBlock.canStepOn || targetBlock?.canStepOn == false) return
 
-        if (creature is Player && groundBlock is Floor) {
-            groundBlock.item?.let {
-                creature.inventory.items += it
-                groundBlock.item = null
-            }
-        }
+        val itemZPosition = boardLevel(boardSize, WorldLevel.ITEM)
+        val newPositionItem = newPosition.withZ(itemZPosition)
+        val item = board[newPositionItem] as? Item
+        if (item != null)
+            pickup(creature, item, newPositionItem)
 
         removeCreature(creature.position)
         setCreature(newPosition, creature)
@@ -78,6 +80,23 @@ class World(
                 targetCreature.effects[effectIndex] = ConfusionEffect()
             }
         }
+    }
+
+    private fun pickup(creature: Creature, item: Item, position: Position3D) {
+        creature.inventory.add(item)
+        board.remove(position)
+
+        if (creature is Player) {
+            WorldUpdate.publish(this)
+        }
+        log("${creature.displayName} picks ${item.displayName}")
+    }
+
+    fun drop(creature: Creature, item: Item) {
+        creature.inventory.remove(item)
+        val itemPosition = creature.position.withZ(boardLevel(boardSize, WorldLevel.ITEM))
+        board[itemPosition] = item
+        log("${creature.displayName} drops ${item.displayName}")
     }
 
     companion object {

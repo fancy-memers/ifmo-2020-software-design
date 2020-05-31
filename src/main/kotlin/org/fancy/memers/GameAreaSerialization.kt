@@ -3,8 +3,8 @@ package org.fancy.memers
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.fancy.memers.model.*
 import org.fancy.memers.model.ai.*
+import org.fancy.memers.model.drawable.*
 import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
