@@ -3,7 +3,6 @@ package org.fancy.memers.model.generator
 import io.github.serpro69.kfaker.Faker
 import io.github.serpro69.kfaker.FakerConfig
 import io.github.serpro69.kfaker.create
-import org.fancy.memers.model.drawable.Item
 import org.fancy.memers.model.drawable.*
 import org.fancy.memers.model.generator.BoardGenerator.Companion.boardLevel
 import org.hexworks.zircon.api.data.Position3D
@@ -36,7 +35,7 @@ abstract class RandomBoardGenerator(protected val boardSize: Size3D, seed: Int? 
     }
 
     private fun generateRandomItem(): Item {
-        return listOf(Knife, Mace, Armor).random()
+        return listOf(Knife.INSTANCE, Mace.INSTANCE, Armor.INSTANCE).random()
     }
 
     protected fun addItems(itemCount: Int, board: MutableMap<Position3D, Block>) {

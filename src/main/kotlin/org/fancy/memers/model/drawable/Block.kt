@@ -1,9 +1,7 @@
 package org.fancy.memers.model.drawable
 
-import org.fancy.memers.model.fromString
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.graphics.Symbols
-
 
 abstract class Block : Drawable {
     override fun equals(other: Any?): Boolean = this === other || javaClass == other?.javaClass

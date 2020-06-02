@@ -10,7 +10,7 @@ sealed class Item : Floor() {
         get() = TileColor.fromString("#ffff00")
 }
 
-object Knife : Item() {
+class Knife private constructor() : Item() {
     override val attackBonus: Int
         get() = 3
     override val defenceBonus: Int
@@ -21,9 +21,13 @@ object Knife : Item() {
         get() = '^'
     override val displayName: String
         get() = "Knife"
+
+    companion object {
+        val INSTANCE: Knife = Knife()
+    }
 }
 
-object Mace : Item() {
+class Mace private constructor() : Item() {
     override val attackBonus: Int
         get() = 7
     override val defenceBonus: Int
@@ -34,9 +38,13 @@ object Mace : Item() {
         get() = '*'
     override val displayName: String
         get() = "Mace"
+
+    companion object {
+        val INSTANCE: Mace = Mace()
+    }
 }
 
-object Armor : Item() {
+class Armor private constructor() : Item() {
     override val attackBonus: Int
         get() = 0
     override val defenceBonus: Int
@@ -47,4 +55,8 @@ object Armor : Item() {
         get() = '+'
     override val displayName: String
         get() = "Armor"
+
+    companion object {
+        val INSTANCE: Armor = Armor()
+    }
 }

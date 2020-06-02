@@ -3,7 +3,10 @@ package org.fancy.memers
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import org.fancy.memers.model.ai.*
+import org.fancy.memers.model.ai.AggressiveEnemyBehaviour
+import org.fancy.memers.model.ai.EnemyBehaviour
+import org.fancy.memers.model.ai.FunkyEnemyBehaviour
+import org.fancy.memers.model.ai.PassiveEnemyBehaviour
 import org.fancy.memers.model.drawable.*
 import org.fancy.memers.ui.main.board.World
 import org.hexworks.zircon.api.data.Position3D
@@ -16,13 +19,22 @@ private val MOSHI = Moshi.Builder()
             .withSubtype(Enemy::class.java, "enemy")
     )
     .add(
+        PolymorphicJsonAdapterFactory.of(Item::class.java, "itemType")
+            .withSubtype(Knife::class.java, "knife")
+            .withSubtype(Mace::class.java, "mace")
+            .withSubtype(Armor::class.java, "armor")
+    )
+    .add(
         PolymorphicJsonAdapterFactory.of(Block::class.java, "blockType")
             .withSubtype(Empty::class.java, "empty")
             .withSubtype(Floor::class.java, "floor")
             .withSubtype(Wall::class.java, "wall")
+
             .withSubtype(Creature::class.java, "entity")
             .withSubtype(Player::class.java, "player")
             .withSubtype(Enemy::class.java, "enemy")
+
+            .withSubtype(Item::class.java, "item")
             .withSubtype(Knife::class.java, "knife")
             .withSubtype(Mace::class.java, "mace")
             .withSubtype(Armor::class.java, "armor")
