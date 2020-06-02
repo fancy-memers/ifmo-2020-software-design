@@ -35,7 +35,7 @@ abstract class RandomBoardGenerator(protected val boardSize: Size3D, seed: Int? 
     }
 
     private fun generateRandomItem(): Item {
-        return listOf(Knife.INSTANCE, Mace.INSTANCE, Armor.INSTANCE).random()
+        return listOf(Knife.INSTANCE, Mace.INSTANCE, PlateMail.INSTANCE, Boots.INSTANCE).random()
     }
 
     protected fun addItems(itemCount: Int, board: MutableMap<Position3D, Block>) {

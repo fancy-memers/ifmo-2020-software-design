@@ -64,9 +64,6 @@ class World(
             enemies.remove(targetCreature)
             removeCreature(targetCreature.position)
         }
-        if (creature is Player) {
-            WorldUpdate.publish(this)
-        }
     }
 
     fun confuse(creature: Creature, targetCreature: Creature) {
@@ -85,10 +82,6 @@ class World(
     private fun pickup(creature: Creature, item: Item, position: Position3D) {
         creature.inventory.add(item)
         board.remove(position)
-
-        if (creature is Player) {
-            WorldUpdate.publish(this)
-        }
         log("${creature.displayName} picks ${item.displayName}")
     }
 

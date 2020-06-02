@@ -3,6 +3,7 @@ package org.fancy.memers.ui.main.board
 import io.github.serpro69.kfaker.provider.Game
 import kotlinx.collections.immutable.toImmutableList
 import org.fancy.memers.model.drawable.*
+import org.fancy.memers.ui.main.WorldUpdate
 import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
@@ -43,6 +44,7 @@ class GameArea(val world: World) :
         makeAIModification()
         applyEffects()
         reloadGameArea()
+        WorldUpdate.publish(world)
 
         if (world.player.isDead) {
             gameOver()

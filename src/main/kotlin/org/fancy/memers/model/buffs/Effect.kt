@@ -12,6 +12,8 @@ abstract class Effect {
     override fun toString(): String =
         "${this::class.simpleName ?: error("Could not get simpleName")}(duration=$duration)"
 
+    abstract val displayName: String
+
     abstract fun createModification(creature: Creature): GameModification
 }
 
@@ -20,6 +22,9 @@ class ConfusionEffect : Effect() {
 
     override fun createModification(creature: Creature): GameModification =
         GameModification.ConfusedMove(creature)
+
+    override val displayName: String
+        get() = "confusion"
 
     companion object {
         const val INITIAL_DURATION = 5

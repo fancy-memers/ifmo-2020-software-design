@@ -54,7 +54,7 @@ sealed class Creature(var position: Position3D) : Block() {
     val maxHealth: Int
         get() = strength * 4
 
-    val defence: Int get() = inventory.sumBy { it.defenceBonus }
+    val defence: Int get() = inventory.sumBy { it.defenceBonus } + strength / 2
 
     var health: Int = maxHealth
 

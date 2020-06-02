@@ -29,7 +29,7 @@ class CellularAutomataBoardGenerator(
 
             gameBoard[enemyPosition] = Enemy(
                 faker.name.firstName(),
-                PassiveEnemyBehaviour(),
+                AggressiveEnemyBehaviour(),
                 enemyPosition
             )
         }

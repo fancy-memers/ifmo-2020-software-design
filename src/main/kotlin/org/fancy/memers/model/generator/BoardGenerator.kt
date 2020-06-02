@@ -11,7 +11,7 @@ interface BoardGenerator {
 
     companion object {
         fun defaultGenerator(size: Size3D): BoardGenerator =
-            CellularAutomataBoardGenerator(size, 8, UniformBoardGenerator(size, 0.5))
+            CellularAutomataBoardGenerator(size, 8, UniformBoardGenerator(size, 0.45))
 
         fun boardLevel(boardSize: Size3D, level: WorldLevel): Int {
             return when (level) {
