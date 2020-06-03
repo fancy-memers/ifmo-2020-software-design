@@ -36,8 +36,6 @@ private val MOSHI = Moshi.Builder()
             .withSubtype(Enemy::class.java, "enemy")
 
             .withSubtype(Item::class.java, "item")
-            .withSubtype(Weapon::class.java, "weapon")
-            .withSubtype(Armor::class.java, "armor")
             .withSubtype(Knife::class.java, "knife")
             .withSubtype(Mace::class.java, "mace")
             .withSubtype(PlateMail::class.java, "platemail")
