@@ -6,7 +6,7 @@ import org.hexworks.zircon.api.Components
 import org.hexworks.zircon.api.component.Fragment
 import org.hexworks.zircon.api.graphics.Symbols
 
-class InventoryRowFragment(width: Int, item: Item) : Fragment {
+class InventoryRowFragment(private val canDropItem: Boolean, width: Int, item: Item) : Fragment {
     val dropButton = Components.button()
         .withText("${Symbols.ARROW_DOWN}")
         .build()
@@ -24,6 +24,7 @@ class InventoryRowFragment(width: Int, item: Item) : Fragment {
                     .withSize(InventoryFragment.NAME_COLUMN_WIDTH, 1)
                     .withText(item.displayName)
             )
-            addComponent(dropButton)
+            if (canDropItem)
+                addComponent(dropButton)
         }
 }

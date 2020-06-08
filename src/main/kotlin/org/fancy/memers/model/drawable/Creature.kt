@@ -10,8 +10,7 @@ import java.util.*
 import kotlin.math.pow
 
 sealed class Creature(var position: Position3D) : Block() {
-    val inventory: Inventory =
-        Inventory()
+    val inventory: Inventory = Inventory()
 
     override fun equals(other: Any?): Boolean = super.equals(other) && position == (other as Creature).position
     override fun hashCode(): Int = Objects.hashCode(position)

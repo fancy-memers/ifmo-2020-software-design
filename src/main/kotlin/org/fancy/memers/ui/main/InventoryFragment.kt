@@ -10,6 +10,7 @@ import org.hexworks.zircon.api.uievent.Processed
 
 class InventoryFragment(
     private val inventory: Inventory,
+    private val canDropItems: Boolean,
     width: Int,
     onDrop: (Item) -> Unit
 ) : Fragment {
@@ -22,17 +23,18 @@ class InventoryFragment(
                 .build().apply {
                     addComponent(Components.label().withText("").withSize(1, 1))
                     addComponent(Components.header().withText("NAME").withSize(NAME_COLUMN_WIDTH, 1))
-                    addComponent(Components.header().withText("ACTIONS").withSize(ACTIONS_COLUMN_WIDTH, 1))
+                    if (canDropItems)
+                        addComponent(Components.header().withText("ACTIONS").withSize(ACTIONS_COLUMN_WIDTH, 1))
                 })
 
-            for (item in inventory) {
-                addFragment(InventoryRowFragment(width, item).apply {
-                    dropButton.handleComponentEvents(ComponentEventType.ACTIVATED) {
-                        inventory.remove(item)
-                        onDrop(item)
-                        Processed
-                    }
-                })
+                for (item in inventory) {
+                    addFragment(InventoryRowFragment(canDropItems, width, item).apply {
+                        dropButton.handleComponentEvents(ComponentEventType.ACTIVATED) {
+                            inventory.remove(item)
+                            onDrop(item)
+                            Processed
+                        }
+                    })
             }
 
 

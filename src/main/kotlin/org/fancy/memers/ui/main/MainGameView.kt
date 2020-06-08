@@ -1,6 +1,8 @@
 package org.fancy.memers.ui.main
 
 import org.fancy.memers.model.buffs.ConfusionEffect
+import org.fancy.memers.model.generator.BoardGenerator
+import org.fancy.memers.model.generator.WorldLevel
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.GameModification
 import org.fancy.memers.ui.main.escape.EscapeMenuView
@@ -84,7 +86,10 @@ class MainGameView(
             .withDecorations(box(BoxType.SINGLE, "Inventory"))
             .withDecorations(shadow())
             .build()
-        val fragment = InventoryFragment(gameArea.world.player.inventory, DIALOG_SIZE.width - 3) {
+        val playerPosition = gameArea.world.player.position
+        val itemPosition = playerPosition.withZ(BoardGenerator.boardLevel(gameArea.world.boardSize, WorldLevel.ITEM))
+        val canDropItems = gameArea.world[itemPosition] == null
+        val fragment = InventoryFragment(gameArea.world.player.inventory, canDropItems, DIALOG_SIZE.width - 3) {
             gameArea.apply(GameModification.DropItem(gameArea.world.player, it))
         }
         panel.addFragment(fragment)
