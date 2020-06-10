@@ -1,7 +1,9 @@
 package org.fancy.memers.ui.main.board
 
+import io.github.serpro69.kfaker.provider.Game
 import kotlinx.collections.immutable.toImmutableList
-import org.fancy.memers.model.*
+import org.fancy.memers.model.drawable.*
+import org.fancy.memers.ui.main.WorldUpdate
 import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
@@ -22,8 +24,7 @@ class GameArea(val world: World) :
                 val targetCreature = world[modification.targetPosition] as? Creature
                 if (modification.creature is Player && targetCreature != null) {
                     world.attack(modification.creature, targetCreature)
-                }
-                else {
+                } else {
                     world.move(modification.creature, modification.targetPosition)
                 }
             }
@@ -33,6 +34,7 @@ class GameArea(val world: World) :
             is GameModification.ConfusionSpellAttack -> world.confuse(modification.attacker, modification.victim)
             is GameModification.Step -> makeStep()
             is GameModification.Identity -> Unit
+            is GameModification.DropItem -> world.drop(modification.creature, modification.item)
             else -> throw IllegalArgumentException()
         }
     }
@@ -42,6 +44,7 @@ class GameArea(val world: World) :
         makeAIModification()
         applyEffects()
         reloadGameArea()
+        WorldUpdate.publish(world)
 
         if (world.player.isDead) {
             gameOver()
@@ -91,7 +94,7 @@ class GameArea(val world: World) :
 
     companion object {
 
-        private fun createTile(block: Drawable): Tile {
+        fun createTile(block: Drawable): Tile {
             return when (block) {
                 is Empty -> Tile.empty()
                 is Enemy -> Tile.newBuilder()

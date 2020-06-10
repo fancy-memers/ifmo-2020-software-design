@@ -1,8 +1,7 @@
-package org.fancy.memers.model
+package org.fancy.memers.model.drawable
 
 import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.graphics.Symbols
-
 
 abstract class Block : Drawable {
     override fun equals(other: Any?): Boolean = this === other || javaClass == other?.javaClass
@@ -22,14 +21,13 @@ class Empty : Block() {
         get() = ""
 }
 
-class Floor : Block() {
-    var item: Item? = null
+open class Floor : Block() {
     override val symbol: Char
-        get() = item?.symbol ?: Symbols.INTERPUNCT
+        get() = Symbols.INTERPUNCT
     override val foregroundColor: TileColor
-        get() = TileColor.fromString(if (item == null) "#75715E" else "#FFEB3B")
+        get() = TileColor.fromString("#75715E")
     override val backgroundColor: TileColor
-        get() = TileColor.fromString("#1e2320", 100)
+        get() = TileColor.fromString("#1e2320")
     override val canStepOn: Boolean
         get() = true
     override val displayName: String

@@ -1,5 +1,6 @@
-package org.fancy.memers.model
+package org.fancy.memers.model.buffs
 
+import org.fancy.memers.model.drawable.Creature
 import org.fancy.memers.ui.main.board.GameModification
 
 abstract class Effect {
@@ -11,17 +12,22 @@ abstract class Effect {
     override fun toString(): String =
         "${this::class.simpleName ?: error("Could not get simpleName")}(duration=$duration)"
 
+    abstract val displayName: String
+
     abstract fun createModification(creature: Creature): GameModification
 }
 
-class ConfusionEffect: Effect() {
-    override var duration: Int = INITAL_DURATION
+class ConfusionEffect : Effect() {
+    override var duration: Int = INITIAL_DURATION
 
     override fun createModification(creature: Creature): GameModification =
         GameModification.ConfusedMove(creature)
 
+    override val displayName: String
+        get() = "confusion"
+
     companion object {
-        const val INITAL_DURATION = 5
+        const val INITIAL_DURATION = 5
     }
 }
 

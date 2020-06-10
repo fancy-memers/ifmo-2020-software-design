@@ -13,3 +13,7 @@ private object Logger {
 fun log(content: String) {
     Logger.log(content)
 }
+
+fun logError(message: String) {
+    Logger.log("ERROR: $message")
+}

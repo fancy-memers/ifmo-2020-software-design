@@ -35,6 +35,12 @@ class InfoPanelFragment(parent: TileGrid) : Fragment {
         .withSize(root.width, 1).build()
     private val intelligenceLine = Components.label()
         .withSize(root.width, 1).build()
+    private val damadgeLine = Components.label()
+        .withSize(root.width, 1).build()
+    private val defenceLine = Components.label()
+        .withSize(root.width, 1).build()
+    private val effectsLine = Components.label()
+        .withSize(root.width, 1).build()
 
     init {
         root.addComponent(levelLine)
@@ -42,6 +48,9 @@ class InfoPanelFragment(parent: TileGrid) : Fragment {
         root.addComponent(strengthLine)
         root.addComponent(agilityLine)
         root.addComponent(intelligenceLine)
+        root.addComponent(damadgeLine)
+        root.addComponent(defenceLine)
+        root.addComponent(effectsLine)
         Zircon.eventBus.subscribeTo<WorldUpdate> {
             it.world.player.run {
                 levelLine.text = "level: $level exp: $experience"
@@ -49,6 +58,15 @@ class InfoPanelFragment(parent: TileGrid) : Fragment {
                 strengthLine.text = "str: $strength"
                 agilityLine.text = "agi: $agility"
                 intelligenceLine.text = "str: $intelligence"
+                damadgeLine.text = "dmg: $attack"
+                defenceLine.text = "def: $defence"
+                effectsLine.text = "eff: -"
+                if (effects.isNotEmpty()) {
+                    val status = effects.map { effect ->
+                        effect.displayName.substring(0..2)
+                    }.fold("", String::plus)
+                    effectsLine.text = "eff: $status"
+                }
             }
             KeepSubscription
         }
