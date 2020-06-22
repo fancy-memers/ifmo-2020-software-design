@@ -1,8 +1,10 @@
 package org.fancy.memers.model
 
+import org.fancy.memers.model.drawable.Floor
+import org.fancy.memers.model.drawable.Player
+import org.fancy.memers.model.drawable.Wall
 import org.fancy.memers.model.generator.BoardGenerator
 import org.hexworks.zircon.api.data.Size3D
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class RandomBoardGeneratorTest {
@@ -19,17 +21,15 @@ internal class RandomBoardGeneratorTest {
         val generator = BoardGenerator.defaultGenerator(size)
         val map = generator.generateMap()
 
-        val player = map.values.singleOrNull { it is Player }
+        val playerPosition = map.entries.singleOrNull { it.value is Player }?.key
             ?: error("Expected single player")
 
-        val playerPosition = player.position.withZ(0)
-        check(map[playerPosition] is Floor) { "Expected player to be on empty block" }
+        check(map[playerPosition.withZ(0)] is Floor) { "Expected player to be on empty block" }
 
         val numberBlocks = xLength * yLength
         val numberWalls = map.values.count { it is Wall }
         val numberFloors = map.values.count { it is Floor }
-        check(numberWalls >= 4) { "Expected enough number of walls" }
+        check(numberWalls >= 2) { "Expected enough number of walls" }
         check(numberFloors >= numberBlocks / 10) { "Expected enough number of empty blocks" }
-        assertEquals(numberWalls + numberFloors, numberBlocks)
     }
 }
