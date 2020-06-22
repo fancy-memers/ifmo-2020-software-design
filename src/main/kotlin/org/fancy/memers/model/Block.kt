@@ -20,9 +20,14 @@ data class Floor(override var position: @ContextualSerialization Position3D) : B
     override val symbol: Char
         get() = Symbols.INTERPUNCT
     override val foregroundColor: TileColor
-        get() = TileColor.fromString("#75715E")
+        get() = FOREGROUND_COLOR
     override val backgroundColor: TileColor
-        get() = TileColor.fromString("#1e2320", 100)
+        get() = BACKGROUND_COLOR
+
+    companion object {
+        private val FOREGROUND_COLOR: TileColor = TileColor.fromString("#75715E")
+        private val BACKGROUND_COLOR: TileColor = TileColor.fromString("#1e2320", 100)
+    }
 }
 
 @Serializable
@@ -30,9 +35,14 @@ data class Wall(override var position: @ContextualSerialization Position3D) : Bl
     override val symbol: Char
         get() = '#'
     override val foregroundColor: TileColor
-        get() = TileColor.fromString("#75715E")
+        get() = FOREGROUND_COLOR
     override val backgroundColor: TileColor
-        get() = TileColor.fromString("#3E3D32")
+        get() = BACKGROUND_COLOR
+
+    companion object {
+        private val FOREGROUND_COLOR: TileColor = TileColor.fromString("#75715E")
+        private val BACKGROUND_COLOR: TileColor = TileColor.fromString("#3E3D32")
+    }
 }
 
 @Serializable
@@ -40,7 +50,12 @@ data class Player(override var position: @ContextualSerialization Position3D) : 
     override val symbol: Char
         get() = '@'
     override val foregroundColor: TileColor
-        get() = TileColor.fromString("#FFCD22")
+        get() = FOREGROUND_COLOR
     override val backgroundColor: TileColor
-        get() = TileColor.fromString("#1e2320")
+        get() = BACKGROUND_COLOR
+
+    companion object {
+        private val FOREGROUND_COLOR: TileColor = TileColor.fromString("#FFCD22")
+        private val BACKGROUND_COLOR: TileColor = TileColor.fromString("#1e2320")
+    }
 }
