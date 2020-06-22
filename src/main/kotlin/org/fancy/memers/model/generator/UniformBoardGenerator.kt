@@ -4,6 +4,11 @@ import org.fancy.memers.model.*
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
+/**
+ * Генерирует случайную карту заданного размера
+ * Каждая клетка игрового поля независимо от других заполняется стеной с вероятностью fillRate или пустотой иначе
+ * Также в случайную клетку размещается игрок
+ */
 class UniformBoardGenerator(
     private val boardSize: Size3D,
     private val fillRate: Double = 0.2,

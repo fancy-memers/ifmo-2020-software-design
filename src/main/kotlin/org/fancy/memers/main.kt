@@ -6,6 +6,9 @@ import org.hexworks.zircon.api.ColorThemes
 import org.hexworks.zircon.api.SwingApplications
 import org.hexworks.zircon.api.application.AppConfig
 
+/**
+ * Точка входа в игру
+ */
 fun main() {
     val config = AppConfig.newBuilder()
         .withSize(70, 40)

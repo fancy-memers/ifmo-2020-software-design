@@ -2,6 +2,9 @@ package org.fancy.memers.ui.main
 
 import org.hexworks.zircon.api.uievent.KeyCode
 
+/**
+ * Основные константы связанные с user input
+ */
 object KeyboardControls {
     val MOVE_UP = listOf(KeyCode.KEY_W, KeyCode.UP)
     val MOVE_DOWN = listOf(KeyCode.KEY_S, KeyCode.DOWN)

@@ -4,7 +4,13 @@ import org.fancy.memers.model.Block
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
+/**
+ * Базовый класс для генерации карты
+ */
 interface BoardGenerator {
+    /**
+     * Генерирует случайную карту
+     */
     fun generateMap(withPlayer: Boolean = true): Map<Position3D, Block>
 
     companion object {

@@ -4,6 +4,11 @@ import org.fancy.memers.model.*
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
+/**
+ * Генерирует случайную карту заданного размера
+ * Используется алгоритм "Cellular Automata": http://kidojo.com/cellauto/
+ * В качестве изначальной карты для алгоритма использует карту сгенерированную `initialGenerator`
+ */
 class CellularAutomataBoardGenerator(
     private val boardSize: Size3D,
     private val iterationNumber: Int = 10,

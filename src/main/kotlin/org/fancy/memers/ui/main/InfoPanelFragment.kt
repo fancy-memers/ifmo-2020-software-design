@@ -8,6 +8,9 @@ import org.hexworks.zircon.api.extensions.box
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
 
+/**
+ * Панель с основной игровой информацией, такой как характеристики игрока
+ */
 class InfoPanelFragment(parent: TileGrid) : Fragment {
     override val root: Component = Components.panel()
         .withSize(MainScreenConfig.infoPanelSize(parent))

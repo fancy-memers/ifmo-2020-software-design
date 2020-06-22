@@ -4,7 +4,9 @@ import org.hexworks.zircon.api.data.Size
 import org.hexworks.zircon.api.data.Size3D
 import org.hexworks.zircon.api.grid.TileGrid
 
-
+/**
+ * Класс с основными игровыми константами
+ */
 internal object MainScreenConfig {
     private const val BOARD_DEPTH = 5
     const val FANCY_LOG = "LOG"

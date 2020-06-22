@@ -7,6 +7,10 @@ import org.fancy.memers.model.generator.BoardGenerator
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
 
+/**
+ * Основной класс модели
+ * Содержит информацию о всех блоках модели и методы для её изменения
+ */
 class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.defaultGenerator(size)) {
     val actualBoard = generator.generateMap().toMutableMap()
 
@@ -22,6 +26,10 @@ class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.default
         blockChangeEventHandlers.forEach { it(position) }
     }
 
+    /**
+     * Перемещает игрока в соответствующем направлении
+     * Если это невозможно (например из-за стены), перемещения не происходит
+     */
     fun movePlayer(diff: Position3D) {
         val oldPlayerPosition = player.position
         val newPlayerPosition = oldPlayerPosition.withRelative(diff)
@@ -40,5 +48,6 @@ class World(val size: Size3D, generator: BoardGenerator = BoardGenerator.default
         triggerBlockChangeEvent(newPlayerPosition)
     }
 
+    // Нужен для extension метода World.deserialize
     companion object
 }

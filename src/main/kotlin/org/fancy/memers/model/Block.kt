@@ -6,6 +6,9 @@ import org.hexworks.zircon.api.color.TileColor
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.graphics.Symbols
 
+/**
+ * Класс описывающий один игровой объект (клетку или entity) с точки зрения модели
+ */
 @Serializable
 sealed class Block : Drawable
 
@@ -15,6 +18,9 @@ data class Empty(override var position: @ContextualSerialization Position3D) : B
         get() = ' '
 }
 
+/**
+ * Пустая клетка игрового поля, по которой может перемещаться игрок
+ */
 @Serializable
 data class Floor(override var position: @ContextualSerialization Position3D) : Block() {
     override val symbol: Char
@@ -30,6 +36,9 @@ data class Floor(override var position: @ContextualSerialization Position3D) : B
     }
 }
 
+/**
+ * Занятая клетка игрового поля, по которой не может перемещаться игрок
+ */
 @Serializable
 data class Wall(override var position: @ContextualSerialization Position3D) : Block() {
     override val symbol: Char
@@ -45,6 +54,9 @@ data class Wall(override var position: @ContextualSerialization Position3D) : Bl
     }
 }
 
+/**
+ * Игровой персонаж, может свободно перемещаться по пустым клеткам
+ */
 @Serializable
 data class Player(override var position: @ContextualSerialization Position3D) : Block() {
     override val symbol: Char

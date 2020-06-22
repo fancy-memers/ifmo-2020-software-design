@@ -19,17 +19,23 @@ import org.hexworks.zircon.api.uievent.KeyboardEventType
 import org.hexworks.zircon.api.view.base.BaseView
 import java.io.File
 
-
+/**
+ * Основное игровое меню
+ * Позволяют начать игру, при этом карта на выбор пользователя случайно генерируется или грузится из файла
+ */
 class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseView(tileGrid, theme) {
+    /** Кнопка для начала игры со случайно сгенерированной картой */
     private val startGenerated = StartScreenConfig.BASE_BUTTON_BUILDER
         .withText(StartScreenConfig.FANCY_START_GEN)
         .withAlignmentWithin(screen, ComponentAlignment.CENTER)
         .build()
+    /** Кнопка для начала игры с загрузкой карты из файла */
     private val startFromFile = StartScreenConfig.BASE_BUTTON_BUILDER
         .withAlignmentAround(startGenerated, ComponentAlignment.BOTTOM_CENTER)
         .withText(StartScreenConfig.FANCY_START_FILE)
         .build()
 
+    /** Поле для ввода пути к файлу из которого будет загружаться карта */
     private val filePath = Components.textArea()
         .withDecorations(shadow())
         .withDecorations(box(BoxType.LEFT_RIGHT_DOUBLE, StartScreenConfig.FANCY_FILEPATH))
@@ -38,7 +44,7 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         .withColorTheme(theme)
         .build()
 
-
+    /** Текст с названием игры */
     private val header = Components.textBox(StartScreenConfig.FANCY_TITLE.length)
         .withAlignmentAround(startGenerated, ComponentAlignment.TOP_CENTER)
         .addHeader(StartScreenConfig.FANCY_TITLE)
@@ -70,6 +76,9 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         startGenerated.requestFocus()
     }
 
+    /**
+     * Начать игру с картой загруженной из файла
+     */
     private fun startWithFile(file: File) {
         check(file.exists()) { "File $file does not exist" }
         val data = file.readText()
@@ -77,6 +86,9 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         start(GameArea(world))
     }
 
+    /**
+     * Начать игру со случайно сгенерированной картой
+     */
     private fun startGeneratedWorld() {
         start(GameArea(World(MainScreenConfig.boardSize(screen))))
     }

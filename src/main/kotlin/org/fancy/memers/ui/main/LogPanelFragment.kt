@@ -8,6 +8,9 @@ import org.hexworks.zircon.api.extensions.box
 import org.hexworks.zircon.api.graphics.BoxType
 import org.hexworks.zircon.api.grid.TileGrid
 
+/**
+ * Панель с информацией об игровых событиях
+ */
 class LogPanelFragment(parent: TileGrid) : Fragment {
     override val root: Component = Components.logArea()
         .withSize(MainScreenConfig.logPanelSize(parent))

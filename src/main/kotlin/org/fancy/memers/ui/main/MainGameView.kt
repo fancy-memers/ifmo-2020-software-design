@@ -6,8 +6,12 @@ import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.grid.TileGrid
 import org.hexworks.zircon.api.uievent.*
 import org.hexworks.zircon.api.view.base.BaseView
-import java.util.logging.Logger
 
+/**
+ * Основной игровой экран
+ * Содержит игровое поле, панель с игровыми событиями и панель с игровой информацией
+ * Также отвечает за (низкоуровневую) обработку user input
+ */
 class MainGameView(
     tileGrid: TileGrid,
     theme: ColorTheme,

@@ -7,6 +7,11 @@ import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.game.base.BaseGameArea
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
 
+/**
+ * Класс требуемый фреймворком (zircon)
+ * По сути обёртка над World, преобразующая наши блоки модели (Block) в блоки представления (view) фреймворка (GameBlock)
+ * И обновляющая view при изменениях модели
+ */
 class GameArea(val world: World):
     BaseGameArea<Tile, GameAreaBlock<Tile>>(initialVisibleSize = world.size, initialActualSize = world.size) {
 
@@ -17,6 +22,9 @@ class GameArea(val world: World):
         }
     }
 
+    /**
+     * Обновляет блок view на основе блока модели
+     */
     private fun updateBlock(position: Position3D) {
         val block = world.actualBoard[position]
         val gameBlock = if (block != null) GameBlock(createTile(block)) else EMPTY_TILE_BLOCK
