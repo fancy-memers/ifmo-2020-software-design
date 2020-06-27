@@ -91,17 +91,18 @@ class MainGameView(
             .withDecorations(box(BoxType.SINGLE, "Inventory"))
             .withDecorations(shadow())
             .build()
+        val modal = ModalBuilder.newBuilder<EmptyModalResult>()
+            .withParentSize(screen.size)
+            .withComponent(panel)
+            .build()
         val playerPosition = gameArea.world.player.position
         val itemPosition = playerPosition.withZ(BoardGenerator.boardLevel(gameArea.world.boardSize, WorldLevel.ITEM))
         val canDropItems = gameArea.world[itemPosition] == null
         val fragment = InventoryFragment(gameArea.world.player.inventory, canDropItems, DIALOG_SIZE.width - 3) {
             gameArea.apply(GameModification.DropItem(gameArea.world.player, it))
+            modal.close(EmptyModalResult)
         }
         panel.addFragment(fragment)
-        val modal = ModalBuilder.newBuilder<EmptyModalResult>()
-            .withParentSize(screen.size)
-            .withComponent(panel)
-            .build()
 
         panel.addComponent(Components.button()
             .withText("Close")
