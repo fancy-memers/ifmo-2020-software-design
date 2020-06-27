@@ -11,9 +11,8 @@ internal class RandomBoardGeneratorTest {
 
     @Test
     fun createRandomMap() {
-        doCreateRandomMapTest(20, 10, 5)
-        doCreateRandomMapTest(10, 20, 6)
-        doCreateRandomMapTest(20, 20, 3)
+        doCreateRandomMapTest(20, 40, 5)
+        doCreateRandomMapTest(40, 20, 6)
     }
 
     private fun doCreateRandomMapTest(xLength: Int, yLength: Int, zLength: Int) {
