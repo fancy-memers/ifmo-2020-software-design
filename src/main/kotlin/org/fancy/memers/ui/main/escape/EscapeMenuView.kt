@@ -1,8 +1,10 @@
 package org.fancy.memers.ui.main.escape
 
 import org.fancy.memers.deserialize
+import org.fancy.memers.model.generator.BoardGenerator
 import org.fancy.memers.serialize
 import org.fancy.memers.ui.main.MainGameView
+import org.fancy.memers.ui.main.MainScreenConfig
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.World
 import org.fancy.memers.ui.start.StartScreenConfig
@@ -32,9 +34,14 @@ class EscapeMenuView(
         .withAlignmentWithin(screen, ComponentAlignment.CENTER)
         .build()
 
+    private val startNewButton = EscapeScreenConfig.BASE_BUTTON_BUILDER
+        .withAlignmentAround(returnButton, ComponentAlignment.BOTTOM_CENTER)
+        .withText(EscapeScreenConfig.START_NEW)
+        .build()
+
 
     private val saveToFile = EscapeScreenConfig.BASE_BUTTON_BUILDER
-        .withAlignmentAround(returnButton, ComponentAlignment.BOTTOM_CENTER)
+        .withAlignmentAround(startNewButton, ComponentAlignment.BOTTOM_CENTER)
         .withText(EscapeScreenConfig.SAVE_FILE)
         .build()
 
@@ -63,6 +70,11 @@ class EscapeMenuView(
             filterKeyboardEvent(KeyCode.ENTER) { _, _ -> returnToGame() }
         )
 
+        returnButton.processKeyboardEvents(
+            KeyboardEventType.KEY_PRESSED,
+            filterKeyboardEvent(KeyCode.ENTER) { _, _ -> startNewGame() }
+        )
+
         saveToFile.processKeyboardEvents(
             KeyboardEventType.KEY_PRESSED,
             filterKeyboardEvent(KeyCode.ENTER) { _, _ -> saveToFile( File(filePath.text) ) }
@@ -80,11 +92,12 @@ class EscapeMenuView(
         )
 
         returnButton.processComponentEvents(ComponentEventType.ACTIVATED) { this.returnToGame() }
+        startNewButton.processComponentEvents(ComponentEventType.ACTIVATED) { this.startNewGame() }
         saveToFile.processComponentEvents(ComponentEventType.ACTIVATED) { this.saveToFile(File(filePath.text)) }
         startFromFile.processComponentEvents(ComponentEventType.ACTIVATED) { this.startWithFile(File(filePath.text)) }
 
         screen.addComponent(header)
-        screen.addComponents(returnButton, saveToFile, startFromFile)
+        screen.addComponents(returnButton, startNewButton, saveToFile, startFromFile)
         screen.addComponent(filePath)
         returnButton.requestFocus()
     }
@@ -102,6 +115,12 @@ class EscapeMenuView(
 
     private fun returnToGame() {
         start(gameArea)
+    }
+
+    private fun startNewGame() {
+        val size = MainScreenConfig.boardSize(screen)
+        val board = BoardGenerator.defaultGenerator(size).generateMap()
+        start(GameArea(World(size, board.toMutableMap())))
     }
 
     private fun start(gameArea: GameArea) {
