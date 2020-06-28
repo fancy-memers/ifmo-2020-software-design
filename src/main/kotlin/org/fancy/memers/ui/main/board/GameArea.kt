@@ -3,6 +3,7 @@ package org.fancy.memers.ui.main.board
 import kotlinx.collections.immutable.toImmutableList
 import org.fancy.memers.model.drawable.*
 import org.fancy.memers.ui.main.WorldUpdate
+import org.fancy.memers.ui.start.GameOverMenuView
 import org.fancy.memers.utils.RogueBaseGameArea
 import org.hexworks.zircon.api.data.Tile
 import org.hexworks.zircon.api.data.Block as GameAreaBlock
@@ -57,10 +58,6 @@ class GameArea(val world: World) :
         reloadGameArea()
         WorldUpdate.publish(world)
 
-        if (world.player.isDead) {
-            gameOver()
-        }
-
         // FIXME: remove DEBUG logging
         println("Player: ${world.player}")
         println("Enemies: ${world.enemies}")
@@ -104,9 +101,8 @@ class GameArea(val world: World) :
         }
     }
 
-    private fun gameOver() {
-        TODO("not implemented")
-    }
+    val gameIsOver
+        get() = world.player.isDead
 
     companion object {
 

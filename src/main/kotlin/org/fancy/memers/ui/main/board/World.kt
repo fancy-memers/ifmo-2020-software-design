@@ -70,8 +70,10 @@ class World(
         if (targetCreature.isDead) {
             log("${targetCreature.displayName} is dead")
             gainExperience(creature, targetCreature.givesExperience)
-            enemies.remove(targetCreature)
-            removeCreature(targetCreature.position)
+//            enemies.remove(targetCreature)
+            if (targetCreature !is Player) {
+                removeCreature(targetCreature.position)
+            }
         }
     }
 

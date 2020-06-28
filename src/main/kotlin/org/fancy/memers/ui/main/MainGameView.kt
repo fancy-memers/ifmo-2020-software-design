@@ -6,6 +6,8 @@ import org.fancy.memers.model.generator.WorldLevel
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.ui.main.board.GameModification
 import org.fancy.memers.ui.main.escape.EscapeMenuView
+import org.fancy.memers.ui.start.GameOverMenuView
+import org.fancy.memers.ui.start.StartMenuView
 import org.fancy.memers.utils.logger.LogEvent
 import org.hexworks.cobalt.events.api.KeepSubscription
 import org.hexworks.cobalt.events.api.subscribeTo
@@ -74,6 +76,10 @@ class MainGameView(
             else -> return Pass
         }
         gameArea.apply(GameModification.Step)
+        if (gameArea.gameIsOver) {
+            replaceWith(GameOverMenuView(tileGrid, theme))
+            screen.close()
+        }
         return Processed
     }
 

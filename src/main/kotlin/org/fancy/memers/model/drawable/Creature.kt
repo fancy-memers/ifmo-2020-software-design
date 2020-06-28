@@ -55,7 +55,7 @@ sealed class Creature(open var position: Position3D) : Block() {
 
     val defence: Int get() = inventory.sumBy { it.defenceBonus } + strength / 2
 
-    open var health: Int = maxHealth
+    open var health: Int = 20
 
     open val attack: Int
         get() = strength * attackMultiplier + inventory.sumBy { it.attackBonus }
@@ -67,7 +67,9 @@ sealed class Creature(open var position: Position3D) : Block() {
         effects.removeIf { !it.isActive }
     }
 
-    protected val initialHealth = health
+    protected val initialHealth
+        get() = health
+
     val isDead: Boolean get() = health <= 0
 
     override val canStepOn: Boolean
@@ -115,6 +117,44 @@ open class Player(position: Position3D) : Creature(position) {
 class ConfusedPlayer(val actualPlayer: Player): Player(actualPlayer.position) {
     override var isConfused = true
     override var confusionDuration = DEFAULT_CONFUSION_DURATION
+
+    override fun toString(): String = "Player(level=$level, health=$health, effects=$effects)"
+
+    override var level
+        get() = actualPlayer.level
+        set(value) {
+            actualPlayer.level = value
+        }
+
+    override var experience
+        get() = actualPlayer.experience
+        set(value) {
+            actualPlayer.experience = value
+        }
+
+    override var strength
+        get() = actualPlayer.strength
+        set(value) {
+            actualPlayer.strength = value
+        }
+
+    override var agility
+        get() = actualPlayer.agility
+        set(value) {
+            actualPlayer.agility = value
+        }
+
+    override var intelligence
+        get() = actualPlayer.intelligence
+        set(value) {
+            actualPlayer.intelligence = value
+        }
+
+    override var health
+        get() = actualPlayer.health
+        set(value) {
+            actualPlayer.health = value
+        }
 
     override fun updateEffects() {
         actualPlayer.updateEffects()

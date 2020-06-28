@@ -24,20 +24,20 @@ import java.io.File
  * Основное игровое меню
  * Позволяют начать игру, при этом карта на выбор пользователя случайно генерируется или грузится из файла
  */
-class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseView(tileGrid, theme) {
+open class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseView(tileGrid, theme) {
     /** Кнопка для начала игры со случайно сгенерированной картой */
-    private val startGenerated = StartScreenConfig.BASE_BUTTON_BUILDER
+    protected val startGenerated = StartScreenConfig.BASE_BUTTON_BUILDER
         .withText(StartScreenConfig.FANCY_START_GEN)
         .withAlignmentWithin(screen, ComponentAlignment.CENTER)
         .build()
     /** Кнопка для начала игры с загрузкой карты из файла */
-    private val startFromFile = StartScreenConfig.BASE_BUTTON_BUILDER
+    protected  val startFromFile = StartScreenConfig.BASE_BUTTON_BUILDER
         .withAlignmentAround(startGenerated, ComponentAlignment.BOTTOM_CENTER)
         .withText(StartScreenConfig.FANCY_START_FILE)
         .build()
 
     /** Поле для ввода пути к файлу из которого будет загружаться карта */
-    private val filePath = Components.textArea()
+    protected  val filePath = Components.textArea()
         .withDecorations(shadow())
         .withDecorations(box(BoxType.LEFT_RIGHT_DOUBLE, StartScreenConfig.FANCY_FILEPATH))
         .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT)
@@ -47,7 +47,7 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         .build()
 
     /** Текст с названием игры */
-    private val header = Components.textBox(StartScreenConfig.FANCY_TITLE.length)
+    protected open val header = Components.textBox(StartScreenConfig.FANCY_TITLE.length)
         .withAlignmentAround(startGenerated, ComponentAlignment.TOP_CENTER)
         .addHeader(StartScreenConfig.FANCY_TITLE)
         .addNewLine()
