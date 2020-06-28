@@ -43,6 +43,7 @@ class StartMenuView(private val tileGrid: TileGrid, theme: ColorTheme) : BaseVie
         .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT)
         .withSize(30, 3)
         .withColorTheme(theme)
+        .withText(StartScreenConfig.DEFAULT_SAVE_FILE)
         .build()
 
     /** Текст с названием игры */

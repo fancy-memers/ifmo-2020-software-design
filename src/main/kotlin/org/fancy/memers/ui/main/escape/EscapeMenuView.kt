@@ -56,6 +56,7 @@ class EscapeMenuView(
         .withAlignmentWithin(screen, ComponentAlignment.BOTTOM_RIGHT)
         .withSize(30, 3)
         .withColorTheme(theme)
+        .withText(EscapeScreenConfig.DEFAULT_SAVE_FILE)
         .build()
 
     private val header = Components.textBox(EscapeScreenConfig.TITLE.length)

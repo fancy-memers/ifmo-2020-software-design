@@ -9,6 +9,7 @@ internal object StartScreenConfig {
     const val FANCY_TITLE = "Fancy RogueLike"
     const val FANCY_START_FILE = "Start from file!"
     const val FANCY_START_GEN = "Start random!"
+    const val DEFAULT_SAVE_FILE = "game.save"
 
     val BASE_BUTTON_BUILDER = Components.button()
         .withDecorations(shadow())

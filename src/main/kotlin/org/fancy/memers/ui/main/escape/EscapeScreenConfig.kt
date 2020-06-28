@@ -11,6 +11,7 @@ internal object EscapeScreenConfig {
     const val SAVE_FILE = "Save to file!"
     const val RETURN = "RETURN"
     const val START_NEW = "Start New Game!"
+    const val DEFAULT_SAVE_FILE = "game.save"
 
     val BASE_BUTTON_BUILDER = Components.button()
         .withDecorations(shadow())
