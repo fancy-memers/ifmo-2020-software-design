@@ -1,6 +1,5 @@
 package org.fancy.memers.ui.main.board
 
-import io.github.serpro69.kfaker.provider.Game
 import kotlinx.collections.immutable.toImmutableList
 import org.fancy.memers.model.drawable.*
 import org.fancy.memers.ui.main.WorldUpdate
@@ -27,10 +26,14 @@ class GameArea(val world: World) :
         when (modification) {
             is GameModification.BaseMove -> {
                 val targetCreature = world[modification.targetPosition] as? Creature
-                if (modification.creature is Player && targetCreature != null) {
-                    world.attack(modification.creature, targetCreature)
+                val actualModification = when (modification.creature) {
+                    is ConfusedPlayer -> GameModification.ConfusedMove(modification.creature)
+                    else -> modification
+                }
+                if (actualModification.creature is Player && targetCreature != null) {
+                    world.attack(actualModification.creature, targetCreature)
                 } else {
-                    world.move(modification.creature, modification.targetPosition)
+                    world.move(actualModification.creature, actualModification.targetPosition)
                 }
             }
             is GameModification.Attack -> {
@@ -84,7 +87,12 @@ class GameArea(val world: World) :
         world.enemies.forEach { applyCreatureEffects(it) }
         applyCreatureEffects(world.player)
         world.enemies.forEach { it.updateEffects() }
-        world.player.updateEffects()
+        world.player.run {
+            updateEffects()
+            if (isConfused && confusionDuration <= 0) {
+                world.setCreature(position, (this as ConfusedPlayer).actualPlayer)
+            }
+        }
     }
 
     // обновляет view

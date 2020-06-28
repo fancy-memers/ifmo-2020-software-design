@@ -9,7 +9,7 @@ import org.hexworks.zircon.api.graphics.Symbols
 import java.util.*
 import kotlin.math.pow
 
-sealed class Creature(var position: Position3D) : Block() {
+sealed class Creature(open var position: Position3D) : Block() {
     val inventory: Inventory = Inventory()
 
     override fun equals(other: Any?): Boolean = super.equals(other) && position == (other as Creature).position
@@ -48,14 +48,14 @@ sealed class Creature(var position: Position3D) : Block() {
     open var strength: Int = DEFAULT_STRENGTH
     open var agility: Int = DEFAULT_AGILITY
     open var intelligence: Int =
-        DEAFULT_INTELLIGENCE
+        DEFAULT_INTELLIGENCE
 
     val maxHealth: Int
         get() = strength * 4
 
     val defence: Int get() = inventory.sumBy { it.defenceBonus } + strength / 2
 
-    var health: Int = maxHealth
+    open var health: Int = maxHealth
 
     open val attack: Int
         get() = strength * attackMultiplier + inventory.sumBy { it.attackBonus }
@@ -77,17 +77,21 @@ sealed class Creature(var position: Position3D) : Block() {
 
     inline fun <reified EffectType : Effect> hasEffect() = effects.indexOfFirst { it is EffectType } != -1
 
+    open val isConfused = false
+    open var confusionDuration = 0
+
     companion object {
         const val DEFAULT_STRENGTH: Int = 5
         const val DEFAULT_AGILITY: Int = 5
-        const val DEAFULT_INTELLIGENCE: Int = 5
+        const val DEFAULT_INTELLIGENCE: Int = 5
+        const val DEFAULT_CONFUSION_DURATION: Int = 5
     }
 }
 
 /**
  * Игровой персонаж, может свободно перемещаться по пустым клеткам
  */
-class Player(position: Position3D) : Creature(position) {
+open class Player(position: Position3D) : Creature(position) {
     override val symbol: Char get() = '@'
 
     override fun toString(): String = "Player(level=$level, health=$health, effects=$effects)"
@@ -106,6 +110,16 @@ class Player(position: Position3D) : Creature(position) {
     override val backgroundColor: TileColor get() = TileColor.fromString("#1e2320")
     override val displayName: String
         get() = "Player"
+}
+
+class ConfusedPlayer(val actualPlayer: Player): Player(actualPlayer.position) {
+    override var isConfused = true
+    override var confusionDuration = DEFAULT_CONFUSION_DURATION
+
+    override fun updateEffects() {
+        actualPlayer.updateEffects()
+        confusionDuration -= 1
+    }
 }
 
 class Enemy(private val name: String, val behaviour: EnemyBehaviour, position: Position3D) : Creature(position) {

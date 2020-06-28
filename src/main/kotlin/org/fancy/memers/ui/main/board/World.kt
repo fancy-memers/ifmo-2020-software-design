@@ -1,10 +1,8 @@
 package org.fancy.memers.ui.main.board
 
-import org.fancy.memers.model.buffs.ConfusionEffect
 import org.fancy.memers.model.drawable.*
 import org.fancy.memers.model.generator.BoardGenerator.Companion.boardLevel
 import org.fancy.memers.model.generator.WorldLevel
-import org.fancy.memers.ui.main.WorldUpdate
 import org.fancy.memers.utils.logger.log
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
@@ -18,10 +16,13 @@ class World(
     val board: MutableMap<Position3D, Block>
 ) {
     // This should be fixed at generator level
-    val player: Player = board.values.filterIsInstance<Player>().single()
-    val enemies: MutableList<Enemy> = board.values.filterIsInstance<Enemy>().toMutableList()
+    val player: Player
+        get() = board.values.filterIsInstance<Player>().single()
 
-    private fun setCreature(position: Position3D, creature: Creature) {
+    val enemies: MutableList<Enemy>
+        get() = board.values.filterIsInstance<Enemy>().toMutableList()
+
+    fun setCreature(position: Position3D, creature: Creature) {
         board[position] = creature
         creature.position = position
     }
@@ -75,15 +76,13 @@ class World(
     }
 
     fun confuse(creature: Creature, targetCreature: Creature) {
-        when (val effectIndex = targetCreature.effects.indexOfFirst { it is ConfusionEffect }) {
-            -1 -> {
-                log("${creature.displayName} confuses ${targetCreature.displayName}")
-                targetCreature.effects.add(ConfusionEffect())
-            }
-            else -> {
-                log("${creature.displayName} updates confusion ${targetCreature.displayName}")
-                targetCreature.effects[effectIndex] = ConfusionEffect()
-            }
+        check(targetCreature is Player)
+        if (!targetCreature.isConfused) {
+            log("${creature.displayName} confuses ${targetCreature.displayName}")
+            setCreature(player.position, ConfusedPlayer(targetCreature))
+        } else {
+            log("${creature.displayName} updates confusion ${targetCreature.displayName}")
+            player.confusionDuration = Creature.DEFAULT_CONFUSION_DURATION
         }
     }
 
@@ -104,3 +103,4 @@ class World(
         // do not remove even if empty, needed to allow `World.deserialize(...)`
     }
 }
+
