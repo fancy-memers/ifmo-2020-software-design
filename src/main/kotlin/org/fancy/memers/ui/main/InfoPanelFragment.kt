@@ -1,5 +1,6 @@
 package org.fancy.memers.ui.main
 
+import org.fancy.memers.model.drawable.ConfusedPlayer
 import org.fancy.memers.ui.main.board.World
 import org.hexworks.cobalt.events.api.Event
 import org.hexworks.cobalt.events.api.KeepSubscription
@@ -44,16 +45,21 @@ class InfoPanelFragment(parent: TileGrid) : Fragment {
         .withSize(root.width, 1).build()
     private val effectsLine = Components.label()
         .withSize(root.width, 1).build()
+    private val confusedLine = Components.label()
+        .withSize(root.width, 1).build()
 
     init {
-        root.addComponent(levelLine)
-        root.addComponent(healthLine)
-        root.addComponent(strengthLine)
-        root.addComponent(agilityLine)
-        root.addComponent(intelligenceLine)
-        root.addComponent(damadgeLine)
-        root.addComponent(defenceLine)
-        root.addComponent(effectsLine)
+        root.run {
+            addComponent(levelLine)
+            addComponent(healthLine)
+            addComponent(strengthLine)
+            addComponent(agilityLine)
+            addComponent(intelligenceLine)
+            addComponent(damadgeLine)
+            addComponent(defenceLine)
+            addComponent(effectsLine)
+            addComponent(confusedLine)
+        }
         Zircon.eventBus.subscribeTo<WorldUpdate> {
             it.world.player.run {
                 levelLine.text = "level: $level exp: $experience"
@@ -69,6 +75,10 @@ class InfoPanelFragment(parent: TileGrid) : Fragment {
                         effect.displayName.substring(0..2)
                     }.fold("", String::plus)
                     effectsLine.text = "eff: $status"
+                }
+                confusedLine.text = "confused: " + when (it.world.player) {
+                    is ConfusedPlayer -> "yes ($confusionDuration)"
+                    else -> "no"
                 }
             }
             KeepSubscription

@@ -2,6 +2,7 @@ package org.fancy.memers.model.ai
 
 import org.fancy.memers.model.drawable.Creature
 import org.fancy.memers.model.drawable.Enemy
+import org.fancy.memers.model.drawable.Player
 import org.fancy.memers.model.hvNeighbours
 import org.fancy.memers.ui.main.board.GameArea
 import org.fancy.memers.utils.Vector3D
@@ -31,6 +32,10 @@ abstract class BaseEnemyBehaviour : EnemyBehaviour {
         val attackRangePositions = enemy.position.hvNeighbours().toSet().minus(enemy.position)
 
         val board = gameArea.world.board.toMutableMap()
-        return attackRangePositions.mapNotNull { board[it] as? Creature }.firstOrNull()
+        val target= attackRangePositions.mapNotNull { board[it] as? Creature }.firstOrNull()
+        if (target !is Player) {
+            return null
+        }
+        return target
     }
 }
