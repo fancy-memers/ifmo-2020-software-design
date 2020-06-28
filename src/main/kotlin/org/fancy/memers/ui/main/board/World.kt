@@ -6,6 +6,7 @@ import org.fancy.memers.model.generator.WorldLevel
 import org.fancy.memers.utils.logger.log
 import org.hexworks.zircon.api.data.Position3D
 import org.hexworks.zircon.api.data.Size3D
+import java.lang.Integer.max
 
 /**
  * Основной класс модели
@@ -64,7 +65,7 @@ class World(
     }
 
     fun attack(creature: Creature, targetCreature: Creature) {
-        val damage = creature.attack - targetCreature.defence
+        val damage = max(creature.attack - targetCreature.defence, 0)
         targetCreature.health -= damage
         log("${creature.displayName} attacks ${targetCreature.displayName} for $damage hp")
         if (targetCreature.isDead) {
